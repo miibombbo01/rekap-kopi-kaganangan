@@ -41,7 +41,7 @@ const btnTutup = document.getElementById('btnTutup');
 const btnSelesai = document.getElementById('btnSelesai');
 
 btnHitung.addEventListener('click', () => {
-  // Buka Overlay dengan animasi menyebar dari tengah
+  overlay.scrollTop = 0; // Reset posisi scroll layar ke atas
   overlay.classList.add('open');
 });
 
