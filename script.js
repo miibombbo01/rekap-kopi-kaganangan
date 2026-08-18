@@ -1,97 +1,114 @@
-// MASTER SETTING TOLERANSI (Dapat diubah via menu Setting oleh Istri Bos)
-const SETTING_TOLERANSI = {
-  caramel: { reg: 18, lrg: 28 }, // Gramasi maksimal audit
-  hargaMenu: { reg: 15000, lrg: 25000 }
-};
+// LIST 8 VARIAN RASA SIRUP
+const DAFTAR_SIRUP = [
+  { id: 'aren', nama: '🍯 Sirup Aren', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
+  { id: 'pandan', nama: '🍃 Sirup Pandan', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
+  { id: 'vanilla', nama: '🍦 Sirup Vanilla', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
+  { id: 'caramel', nama: '🍮 Sirup Caramel', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
+  { id: 'hazelnut', nama: '🌰 Sirup Hazelnut', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
+  { id: 'banana', nama: '🍌 Sirup Banana', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
+  { id: 'cheesecake', nama: '🍰 Sirup Cheesecake', hgKopiReg: 18000, hgKopiLrg: 28000, hgCrmReg: 18000, hgCrmLrg: 28000 },
+  { id: 'butterscotch', nama: '🧈 Sirup Butterscotch', hgKopiReg: 18000, hgKopiLrg: 28000, hgCrmReg: 18000, hgCrmLrg: 28000 }
+];
 
-document.getElementById('btnHitung').addEventListener('click', function() {
-  
-  // 1. AUDIT BOARD CUP
-  const sisaReg = parseInt(document.getElementById('sisaCupReg').value) || 0;
-  const sisaLrg = parseInt(document.getElementById('sisaCupLrg').value) || 0;
-  
-  // Ambil total cup dari inputan sales
-  let totalTerjualReg = 0;
-  let totalTerjualLrg = 0;
-  
-  document.querySelectorAll('.input-sales-reg').forEach(el => {
-    totalTerjualReg += parseInt(el.value) || 0;
-  });
-  document.querySelectorAll('.input-sales-lrg').forEach(el => {
-    totalTerjualLrg += parseInt(el.value) || 0;
-  });
+// GENERATE CARD SIRUP OTOMATIS
+const container = document.getElementById('syrupContainer');
+DAFTAR_SIRUP.forEach(s => {
+  const cardHtml = `
+    <div class="syrup-card" id="card_${s.id}">
+      <div class="syrup-title">
+        <span>${s.nama}</span>
+        <span class="badge" id="badge_${s.id}">Aman</span>
+      </div>
+      <div class="syrup-inputs-grid">
+        <div><label>Gramasi Awal (g):</label><input type="number" id="awal_${s.id}" value="500"></div>
+        <div><label>Gramasi Sisa (g):</label><input type="number" id="sisa_${s.id}" class="calc-trigger" placeholder="0"></div>
+        <div><label>Kopi Reg (Cup):</label><input type="number" id="kopiReg_${s.id}" class="calc-trigger" placeholder="0"></div>
+        <div><label>Kopi Lrg (Cup):</label><input type="number" id="kopiLrg_${s.id}" class="calc-trigger" placeholder="0"></div>
+        <div><label>Creamy Reg (Cup):</label><input type="number" id="crmReg_${s.id}" class="calc-trigger" placeholder="0"></div>
+        <div><label>Creamy Lrg (Cup):</label><input type="number" id="crmLrg_${s.id}" class="calc-trigger" placeholder="0"></div>
+      </div>
+      <div class="syrup-total-money" id="money_${s.id}">Total Uang: Rp 0</div>
+      <div class="syrup-result-box" id="res_${s.id}">Selisih Gramasi: Pas (0g)</div>
+    </div>
+  `;
+  container.innerHTML += cardHtml;
+});
 
-  document.getElementById('txtCupTerjual').innerText = `${totalTerjualReg} Reg | ${totalTerjualLrg} Lrg`;
+// ANIMASI BUNCY & TRANSISI BUKA HALAMAN OVERLAY
+const btnHitung = document.getElementById('btnHitung');
+const overlay = document.getElementById('pageAuditOverlay');
+const btnTutup = document.getElementById('btnTutup');
+const btnSelesai = document.getElementById('btnSelesai');
 
-  const cupHilangReg = 50 - sisaReg - totalTerjualReg;
-  const cupHilangLrg = 25 - sisaLrg - totalTerjualLrg;
+btnHitung.addEventListener('click', () => {
+  // Buka Overlay dengan animasi menyebar dari tengah
+  overlay.classList.add('open');
+});
 
-  const statusCup = document.getElementById('statusCup');
-  const badgeCup = document.getElementById('badgeCup');
+btnTutup.addEventListener('click', () => {
+  overlay.classList.remove('open');
+});
 
-  if (cupHilangReg === 0 && cupHilangLrg === 0) {
-    statusCup.innerText = "Status: 🟢 PAS";
-    statusCup.style.color = "#166534";
-    badgeCup.innerText = "OK";
-    badgeCup.className = "badge";
-  } else {
-    statusCup.innerText = `⚠️ Tak Catat: ${cupHilangReg} Reg, ${cupHilangLrg} Lrg`;
-    statusCup.style.color = "#991B1B";
-    badgeCup.innerText = "MINUS";
-    badgeCup.className = "badge minus";
-  }
+btnSelesai.addEventListener('click', () => {
+  hitungSemuaAudit();
+  overlay.classList.remove('open');
+});
 
-  // 2. AUDIT SIRUP CARAMEL (CONTOH)
-  const awal = parseFloat(document.getElementById('awalCaramel').value) || 0;
-  const sisa = parseFloat(document.getElementById('sisaCaramel').value) || 0;
-  const regTerjual = parseFloat(document.querySelector('.input-sales-reg[data-flavor="caramel"]').value) || 0;
-  const lrgTerjual = parseFloat(document.querySelector('.input-sales-lrg[data-flavor="caramel"]').value) || 0;
-
-  const terpakaiRiil = awal - sisa;
-  const maxToleransi = (regTerjual * SETTING_TOLERANSI.caramel.reg) + (lrgTerjual * SETTING_TOLERANSI.caramel.lrg);
-
-  const resCaramel = document.getElementById('resCaramel');
-  const badgeCaramel = document.getElementById('badgeCaramel');
-
-  if (terpakaiRiil <= maxToleransi) {
-    resCaramel.innerText = `Pemakaian: ${terpakaiRiil}g | Max Tol: ${maxToleransi}g (🟢 PAS)`;
-    badgeCaramel.innerText = "Aman";
-    badgeCaramel.className = "syrup-badge";
-  } else {
-    const selisih = terpakaiRiil - maxToleransi;
-    resCaramel.innerText = `Pemakaian: ${terpakaiRiil}g | Max Tol: ${maxToleransi}g (🔴 MINUS ${selisih}g)`;
-    badgeCaramel.innerText = "MINUS";
-    badgeCaramel.className = "syrup-badge minus";
-  }
-
-  // 3. AUDIT BOARD UANG
-  const kembalian = parseFloat(document.getElementById('inputKembalian').value) || 0;
-  const qris = parseFloat(document.getElementById('inputQRIS').value) || 0;
-  const pengeluaran = parseFloat(document.getElementById('inputPengeluaran').value) || 0;
-  const uangTas = parseFloat(document.getElementById('inputUangTas').value) || 0;
-
-  const totalOmzet = (totalTerjualReg * SETTING_TOLERANSI.hargaMenu.reg) + (totalTerjualLrg * SETTING_TOLERANSI.hargaMenu.lrg);
-  const targetUangTas = totalOmzet + kembalian - qris - pengeluaran;
-  const selisihUang = uangTas - targetUangTas;
-
-  const statusUang = document.getElementById('statusUang');
-  const badgeUang = document.getElementById('badgeUang');
-
-  if (selisihUang === 0) {
-    statusUang.innerText = "Status: 🟢 PAS";
-    statusUang.style.color = "#166534";
-    badgeUang.innerText = "OK";
-    badgeUang.className = "badge";
-  } else if (selisihUang < 0) {
-    statusUang.innerText = `🔴 SELISIH: Rp ${Math.abs(selisihUang).toLocaleString()}`;
-    statusUang.style.color = "#991B1B";
-    badgeUang.innerText = "MINUS";
-    badgeUang.className = "badge minus";
-  } else {
-    statusUang.innerText = `🔵 LEBIH: Rp ${selisihUang.toLocaleString()}`;
-    statusUang.style.color = "#0369A1";
-    badgeUang.innerText = "LEBIH";
-    badgeUang.className = "badge";
+// LOGIKA PEMROSESAN AUDIT
+document.addEventListener('input', (e) => {
+  if (e.target.classList.contains('calc-trigger')) {
+    hitungSemuaAudit();
   }
 });
 
+function hitungSemuaAudit() {
+  let totalOmzetSemua = 0;
+  let totalCupRegSemua = 0;
+  let totalCupLrgSemua = 0;
+
+  DAFTAR_SIRUP.forEach(s => {
+    const awal = parseFloat(document.getElementById(`awal_${s.id}`).value) || 0;
+    const sisa = parseFloat(document.getElementById(`sisa_${s.id}`).value) || 0;
+    const kpReg = parseFloat(document.getElementById(`kopiReg_${s.id}`).value) || 0;
+    const kpLrg = parseFloat(document.getElementById(`kopiLrg_${s.id}`).value) || 0;
+    const crReg = parseFloat(document.getElementById(`crmReg_${s.id}`).value) || 0;
+    const crLrg = parseFloat(document.getElementById(`crmLrg_${s.id}`).value) || 0;
+
+    // Hitung Cup & Uang Per Sirup
+    totalCupRegSemua += (kpReg + crReg);
+    totalCupLrgSemua += (kpLrg + crLrg);
+
+    const uangKopi = (kpReg * s.hgKopiReg) + (kpLrg * s.hgKopiLrg);
+    const uangCreamy = (crReg * s.hgCrmReg) + (crLrg * s.hgCrmLrg);
+    const totalUangSirup = uangKopi + uangCreamy;
+    totalOmzetSemua += totalUangSirup;
+
+    document.getElementById(`money_${s.id}`).innerText = `Total Uang: Rp ${totalUangSirup.toLocaleString()}`;
+
+    // Hitung Selisih Gramasi
+    const terpakai = awal - sisa;
+    const maxToleransi = ((kpReg + crReg) * 18) + ((kpLrg + crLrg) * 28); // Standard Max Gram Audit
+    const resBox = document.getElementById(`res_${s.id}`);
+    const badge = document.getElementById(`badge_${s.id}`);
+
+    if (terpakai <= maxToleransi) {
+      resBox.innerText = `Terpakai: ${terpakai}g | Limit: ${maxToleransi}g (🟢 Pas/Aman)`;
+      resBox.style.color = "#166534";
+      badge.innerText = "Aman";
+      badge.className = "badge";
+    } else {
+      const minus = terpakai - maxToleransi;
+      resBox.innerText = `Terpakai: ${terpakai}g | Limit: ${maxToleransi}g (🔴 Minus ${minus}g)`;
+      resBox.style.color = "#991B1B";
+      badge.innerText = "MINUS";
+      badge.className = "badge minus";
+    }
+  });
+
+  // UPDATE BOARD DASHBOARD DEPAN
+  document.getElementById('dashCupTerjual').innerText = `${totalCupRegSemua} Reg | ${totalCupLrgSemua} Lrg`;
+  
+  const uangTas = parseFloat(document.getElementById('inputUangTas').value) || 0;
+  document.getElementById('dashUangTas').innerText = `Rp ${uangTas.toLocaleString()}`;
+  }
+    
