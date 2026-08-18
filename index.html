@@ -22,26 +22,19 @@
     </header>
 
     <div class="month-bar">
-  <div class="month-title">
-    <span class="icon-cal">📅</span>
-    <h2 id="monthYearText">Agustus 2026</h2>
-  </div>
-  <button class="btn-request">Audit +</button>
-</div>
+      <div class="month-title">
+        <span class="icon-cal">📅</span>
+        <h2 id="monthYearText">Agustus 2026</h2>
+      </div>
+      <button class="btn-request">Audit +</button>
+    </div>
 
-<div class="date-scroll-wrapper">
-  <section class="date-strip" id="dateStripContainer">
-    </section>
-</div>
-
-    <section class="date-strip">
-      <div class="date-pill"><span>16</span><small>Min</small></div>
-      <div class="date-pill"><span>17</span><small>Sen</small></div>
-      <div class="date-pill active"><span>18</span><small>Sel</small></div>
-      <div class="date-pill"><span>19</span><small>Rab</small></div>
-      <div class="date-pill"><span>20</span><small>Kam</small></div>
-      <div class="date-pill"><span>21</span><small>Jum</small></div>
-    </section>
+    <!-- TANGGAL UTAMA HANYA 1 (DIGENERATE LEWAT JS) -->
+    <div class="date-scroll-wrapper">
+      <section class="date-strip" id="dateStripContainer">
+        <!-- Generasi 30 tanggal oleh JS -->
+      </section>
+    </div>
 
     <div class="location-card">
       <div class="loc-info">
@@ -88,14 +81,21 @@
 
   </div>
 
+  <!-- OVERLAY AUDIT -->
   <div id="pageAuditOverlay" class="overlay-page">
     <div class="overlay-header">
-      <button id="btnTutup" class="btn-back">← Kembali</button>
-      <h3>Form Audit & Detail Sirup</h3>
+      <!-- Tombol Kembali berupa lingkaran panah -->
+      <button id="btnTutup" class="btn-back-circle">←</button>
+      
+      <!-- Hapus judul h3 di atas agar langsung form -->
+      <div></div> 
+      
       <button id="btnSelesai" class="btn-save">Simpan</button>
     </div>
 
     <div class="overlay-content">
+      <h3 class="form-main-title">Form Audit & Detail Sirup</h3>
+
       <div class="audit-top-grid">
         <div class="audit-box">
           <h4>🥤 Input Fisik Cup</h4>
@@ -112,7 +112,7 @@
         </div>
       </div>
 
-      <h4 class="section-title">🧪 Input Varian Sirup & Bahan</h4>
+      <h4 class="section-title">Input Varian Sirup & Bahan</h4>
       <div class="syrup-list-grid" id="syrupContainer"></div>
     </div>
   </div>
@@ -130,4 +130,4 @@
   <script src="script.js"></script>
 </body>
 </html>
-                                              
+zzz
