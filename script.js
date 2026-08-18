@@ -112,3 +112,49 @@ function hitungSemuaAudit() {
   document.getElementById('dashUangTas').innerText = `Rp ${uangTas.toLocaleString()}`;
   }
     
+// FUNCTION GENERATE TANGGAL 1 - 30 DENGAN NAMA HARI
+function generateDateStrip() {
+  const container = document.getElementById('dateStripContainer');
+  if (!container) return;
+
+  const namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+  const tanggalHariIni = 18; // Tanggal aktif default (bisa disesuaikan)
+  
+  let html = '';
+
+  for (let i = 1; i <= 30; i++) {
+    // Menghitung nama hari secara urut (contoh simulasi)
+    const dayIndex = (i + 5) % 7; 
+    const hari = namaHari[dayIndex];
+    const isActive = (i === tanggalHariIni) ? 'active' : '';
+
+    html += `
+      <div class="date-pill ${isActive}" data-date="${i}" onclick="selectDate(this)">
+        <span>${i}</span>
+        <small>${hari}</small>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+
+  // Auto Scroll ke Tanggal Aktif agar langsung berada di tengah layar
+  setTimeout(() => {
+    const activePill = container.querySelector('.date-pill.active');
+    if (activePill) {
+      activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }, 300);
+}
+
+// FUNGSI PILIH TANGGAL SAAT DIKLIK
+function selectDate(element) {
+  document.querySelectorAll('.date-pill').forEach(pill => pill.classList.remove('active'));
+  element.classList.add('active');
+  element.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+
+// Jalankan saat dokumen dimuat
+document.addEventListener('DOMContentLoaded', () => {
+  generateDateStrip();
+});
