@@ -3,65 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rekap Kopi Kaganangan</title>
+  <title>Kopi Kaganangan - Rekap Harian</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <!-- HALAMAN 1: DASHBOARD UTAMA -->
-  <div id="pageDashboard" class="page-container active">
+  <div id="pageDashboard" class="page-container">
+    
     <header class="app-header">
-      <div class="brand">
-        <h2>Kopi Kaganangan</h2>
-        <p>Kalkulator Audit Harian</p>
-      </div>
-      <div class="user-select">
-        <select id="selectKaryawan">
+      <span class="time-status">09:41</span>
+      <div class="header-right">
+        <select id="selectKaryawan" class="select-user">
           <option value="randi">Randi</option>
-          <option value="karyawan2">Karyawan B</option>
+          <option value="karyawan2">Shift 2</option>
         </select>
       </div>
     </header>
 
-    <section class="date-bar">
-      <div class="date-item done">16<br><span>Min</span></div>
-      <div class="date-item alert">17<br><span>Sen</span></div>
-      <div class="date-item active">18<br><span>Sel</span></div>
-      <div class="date-item disabled">19<br><span>Rab</span></div>
-      <div class="date-item disabled">20<br><span>Kam</span></div>
+    <div class="month-bar">
+      <div class="month-title">
+        <span class="icon-cal">📅</span>
+        <h2>Agustus 2026</h2>
+      </div>
+      <button class="btn-request">Audit +</button>
+    </div>
+
+    <section class="date-strip">
+      <div class="date-pill"><span>16</span><small>Min</small></div>
+      <div class="date-pill"><span>17</span><small>Sen</small></div>
+      <div class="date-pill active"><span>18</span><small>Sel</small></div>
+      <div class="date-pill"><span>19</span><small>Rab</small></div>
+      <div class="date-pill"><span>20</span><small>Kam</small></div>
+      <div class="date-pill"><span>21</span><small>Jum</small></div>
     </section>
 
-    <main class="main-content">
-      <!-- Tombol Bulat Besar -->
-      <div class="action-container">
+    <div class="location-card">
+      <div class="loc-info">
+        <span class="pin-icon">📍</span>
+        <div>
+          <p class="loc-label">Cabang Outlet</p>
+          <p class="loc-name">Kopi Kaganangan - Outlet Utama</p>
+        </div>
+      </div>
+      <span class="badge-dist">Aktif</span>
+    </div>
+
+    <div class="hero-circle-container">
+      <div class="outer-ring">
         <button id="btnHitung" class="btn-hitung-circle">
           <span>HITUNG</span>
         </button>
       </div>
+    </div>
 
-      <!-- Board Summary Atas -->
-      <div class="summary-grid">
-        <div class="board-card">
-          <div class="card-header">🥤 BOARD CUP <span class="badge" id="dashBadgeCup">OK</span></div>
-          <div class="card-body-dash">
-            <p>Terjual: <b id="dashCupTerjual">0 Reg | 0 Lrg</b></p>
-            <p id="dashStatusCup">Status: Pas</p>
-          </div>
-        </div>
-
-        <div class="board-card">
-          <div class="card-header">💵 BOARD UANG <span class="badge" id="dashBadgeUang">OK</span></div>
-          <div class="card-body-dash">
-            <p>Uang Tas: <b id="dashUangTas">Rp 0</b></p>
-            <p id="dashStatusUang">Status: Pas</p>
-          </div>
-        </div>
+    <div class="summary-triple-grid">
+      <div class="mini-board">
+        <div class="icon-circle yellow">🥤</div>
+        <p class="board-title">Cup Terjual</p>
+        <p class="board-value" id="dashCupTerjual">0 Reg | 0 Lrg</p>
       </div>
-    </main>
+
+      <div class="mini-board">
+        <div class="icon-circle red">💵</div>
+        <p class="board-title">Uang Tas</p>
+        <p class="board-value" id="dashUangTas">Rp 0</p>
+      </div>
+
+      <div class="mini-board">
+        <div class="icon-circle blue">📊</div>
+        <p class="board-title">Status Audit</p>
+        <p class="board-value status-ok" id="dashStatusAudit">Aman</p>
+      </div>
+    </div>
+
+    <div class="status-banner">
+      <span>🏠 Shift Hari Ini: Kopi & Creamy Ready</span>
+    </div>
+
   </div>
 
-  <!-- HALAMAN 2: OVERLAY FULLSCREEN (ANIMASI MENYEBAR DARI TENGAH) -->
   <div id="pageAuditOverlay" class="overlay-page">
     <div class="overlay-header">
       <button id="btnTutup" class="btn-back">← Kembali</button>
@@ -70,38 +91,38 @@
     </div>
 
     <div class="overlay-content">
-      <!-- Board Input Fisik & Kas Atas -->
       <div class="audit-top-grid">
         <div class="audit-box">
           <h4>🥤 Input Fisik Cup</h4>
           <div class="input-row-inline">
-            <input type="number" id="sisaCupReg" placeholder="Sisa Reg">
-            <input type="number" id="sisaCupLrg" placeholder="Sisa Lrg">
+            <input type="number" id="sisaCupReg" inputmode="numeric" placeholder="Sisa Reg">
+            <input type="number" id="sisaCupLrg" inputmode="numeric" placeholder="Sisa Lrg">
           </div>
         </div>
         <div class="audit-box">
           <h4>💵 Input Uang & QRIS</h4>
-          <input type="number" id="inputUangTas" placeholder="Uang di Tas (Rp)">
-          <input type="number" id="inputQRIS" placeholder="Nominal QRIS (Rp)">
-          <input type="number" id="inputPengeluaran" placeholder="Kasbon/Pengeluaran (Rp)">
+          <input type="number" id="inputUangTas" inputmode="numeric" placeholder="Uang di Tas (Rp)">
+          <input type="number" id="inputQRIS" inputmode="numeric" placeholder="Nominal QRIS (Rp)">
+          <input type="number" id="inputPengeluaran" inputmode="numeric" placeholder="Kasbon/Pengeluaran (Rp)">
         </div>
       </div>
 
       <h4 class="section-title">🧪 Input Varian Sirup & Bahan</h4>
-
-      <!-- Grid Daftar Semua Rasa Sirup -->
-      <div class="syrup-list-grid" id="syrupContainer">
-        <!-- Akan di-generate otomatis oleh JS untuk 8 rasa sirup -->
-      </div>
+      <div class="syrup-list-grid" id="syrupContainer"></div>
     </div>
   </div>
 
-  <nav class="bottom-nav">
-    <button class="nav-item active"><span class="icon">📋</span><span class="label">Rekap</span></button>
-    <button class="nav-item"><span class="icon">📊</span><span class="label">Penjualan</span></button>
-    <button class="nav-item"><span class="icon">⚙️</span><span class="label">Setting</span></button>
-  </nav>
+  <div class="bottom-nav-wrapper">
+    <nav class="floating-nav">
+      <button class="nav-btn active"><span>🏠</span></button>
+      <button class="nav-btn"><span>📅</span></button>
+      <button class="nav-btn center-btn"><span>+</span></button>
+      <button class="nav-btn"><span>📊</span></button>
+      <button class="nav-btn"><span>👤</span></button>
+    </nav>
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+                                              
