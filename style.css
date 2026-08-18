@@ -1,0 +1,224 @@
+/* RESET & BASE STYLES */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #F8FAFC;
+  color: #1E293B;
+  padding-bottom: 80px; /* Space for Bottom Nav */
+}
+
+/* HEADER */
+.app-header {
+  background: linear-gradient(135deg, #0284C7, #0369A1);
+  color: #FFFFFF;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+.brand h2 { font-size: 18px; font-weight: 700; }
+.brand p { font-size: 12px; opacity: 0.85; }
+
+.user-select select {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  color: #0369A1;
+}
+
+/* DATE BAR */
+.date-bar {
+  display: flex;
+  gap: 10px;
+  padding: 15px 20px;
+  overflow-x: auto;
+}
+
+.date-item {
+  min-width: 50px;
+  padding: 8px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid #E2E8F0;
+  color: #64748B;
+}
+
+.date-item span { font-size: 10px; font-weight: 400; display: block; }
+.date-item.active { border: 2px solid #0284C7; color: #0284C7; }
+.date-item.done { background: #E0F2FE; color: #0369A1; }
+.date-item.alert { background: #FEF2F2; color: #EF4444; border: 1px solid #FECACA; }
+
+/* SUMMARY BOARDS (GRID) */
+.main-content { padding: 0 16px; }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.board-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #E2E8F0;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #0369A1;
+}
+
+.badge {
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  background: #DCFCE7;
+  color: #166534;
+}
+
+.badge.minus { background: #FEE2E2; color: #991B1B; }
+
+.field-row {
+  font-size: 11px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-row input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.inline-inputs { display: flex; gap: 4px; }
+.inline-inputs input { width: 50%; }
+
+.audit-status {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px;
+  border-radius: 6px;
+  background: #F1F5F9;
+  text-align: center;
+}
+
+/* BUTTON HITUNG */
+.action-container { text-align: center; margin: 20px 0; }
+
+.btn-hitung {
+  background: linear-gradient(135deg, #0284C7, #0369A1);
+  color: #FFFFFF;
+  border: none;
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 30px;
+  box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-hitung:active {
+  transform: scale(0.92); /* Bounce Effect */
+}
+
+/* SYRUP GRID & CARDS */
+.syrup-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.syrup-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid #E2E8F0;
+  /* Animasi Bounce Pop-up */
+  animation: popupBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popupBounce {
+  0% { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.syrup-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.syrup-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.input-group label { font-size: 10px; color: #64748B; display: block; }
+.input-group input {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+}
+
+.syrup-audit-result {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  background: #F8FAFC;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #FFFFFF;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid #E2E8F0;
+}
+
+.nav-item {
+  border: none;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #94A3B8;
+}
+
+.nav-item.active { color: #0284C7; font-weight: 600; }
+.nav-item .icon { font-size: 18px; }
+.nav-item .label { font-size: 10px; }
+  
