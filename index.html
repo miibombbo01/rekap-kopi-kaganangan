@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekap Kopi Kaganangan</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Font Poppins untuk tampilan modern -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Bar / Header -->
+  <header class="app-header">
+    <div class="brand">
+      <h2>Kopi Kaganangan</h2>
+      <p>Kalkulator Audit Harian</p>
+    </div>
+    <div class="user-select">
+      <select id="selectKaryawan">
+        <option value="kamu">Karyawan A</option>
+        <option value="teman">Karyawan B</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Horizontal Date Bar -->
+  <section class="date-bar">
+    <div class="date-item done">16<br><span>Min</span></div>
+    <div class="date-item alert">17<br><span>Sen</span></div>
+    <div class="date-item active">18<br><span>Sel</span></div>
+    <div class="date-item disabled">19<br><span>Rab</span></div>
+    <div class="date-item disabled">20<br><span>Kam</span></div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- Summary Boards (Top Grid) -->
+    <div class="summary-grid">
+      <!-- Board Cup -->
+      <div class="board-card" id="boardCup">
+        <div class="card-header">
+          <span>🥤 BOARD CUP</span>
+          <span class="badge" id="badgeCup">OK</span>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <label>Dibawa:</label>
+            <span>50 Reg | 25 Lrg</span>
+          </div>
+          <div class="field-row input-row">
+            <label>Sisa Fisik:</label>
+            <div class="inline-inputs">
+              <input type="number" id="sisaCupReg" placeholder="Reg">
+              <input type="number" id="sisaCupLrg" placeholder="Lrg">
+            </div>
+          </div>
+          <div class="field-row">
+            <label>Terjual (Catatan):</label>
+            <span id="txtCupTerjual">0 Reg | 0 Lrg</span>
+          </div>
+          <div class="audit-status" id="statusCup">Status: Pas</div>
+        </div>
+      </div>
+
+      <!-- Board Uang -->
+      <div class="board-card" id="boardUang">
+        <div class="card-header">
+          <span>💵 BOARD UANG</span>
+          <span class="badge" id="badgeUang">OK</span>
+        </div>
+        <div class="card-body">
+          <div class="field-row input-row">
+            <label>Modal Kembalian:</label>
+            <input type="number" id="inputKembalian" value="100000">
+          </div>
+          <div class="field-row input-row">
+            <label>Nominal QRIS:</label>
+            <input type="number" id="inputQRIS" placeholder="0">
+          </div>
+          <div class="field-row input-row">
+            <label>Pengeluaran/Kasbon:</label>
+            <input type="number" id="inputPengeluaran" placeholder="0">
+          </div>
+          <div class="field-row input-row">
+            <label>Uang di Tas Fisik:</label>
+            <input type="number" id="inputUangTas" placeholder="0">
+          </div>
+          <div class="audit-status" id="statusUang">Status: Pas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Central Action Button -->
+    <div class="action-container">
+      <button id="btnHitung" class="btn-hitung">
+        <span>📊 HITUNG & AUDIT</span>
+      </button>
+    </div>
+
+    <!-- Section Input Penjualan & Timbangan Bahan (Pop-up Animated Grid) -->
+    <section class="detail-section" id="detailSection">
+      <h3>📋 Input Sales & Timbangan Bahan</h3>
+      
+      <!-- Grid Cards Bahan / Sirup -->
+      <div class="syrup-grid" id="syrupGrid">
+        <!-- Sample Card Sirup Caramel -->
+        <div class="syrup-card" id="cardCaramel">
+          <div class="syrup-header">
+            <h4>🍮 Sirup Caramel</h4>
+            <span class="syrup-badge" id="badgeCaramel">Aman</span>
+          </div>
+          <div class="syrup-inputs">
+            <div class="input-group">
+              <label>Timbangan Awal (g):</label>
+              <input type="number" id="awalCaramel" value="500">
+            </div>
+            <div class="input-group">
+              <label>Sisa Akhir (g):</label>
+              <input type="number" id="sisaCaramel" placeholder="0">
+            </div>
+            <div class="input-group">
+              <label>Terjual Reg (Cup):</label>
+              <input type="number" class="input-sales-reg" data-flavor="caramel" placeholder="0">
+            </div>
+            <div class="input-group">
+              <label>Terjual Lrg (Cup):</label>
+              <input type="number" class="input-sales-lrg" data-flavor="caramel" placeholder="0">
+            </div>
+          </div>
+          <div class="syrup-audit-result" id="resCaramel">
+            Pemakaian: 0g | Max Toleransi: 0g
+          </div>
+        </div>
+        
+        <!-- Kartu sirup/bahan lainnya bisa digenerate dinamis atau ditambah di sini -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-item active">
+      <span class="icon">📋</span>
+      <span class="label">Rekap</span>
+    </button>
+    <button class="nav-item">
+      <span class="icon">📊</span>
+      <span class="label">Penjualan</span>
+    </button>
+    <button class="nav-item">
+      <span class="icon">⚙️</span>
+      <span class="label">Setting</span>
+    </button>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+        </html>
+        
