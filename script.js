@@ -22,7 +22,7 @@ if (container) {
           <span class="badge" id="badge_${s.id}">Aman</span>
         </div>
         <div class="syrup-inputs-grid">
-          <div><label>Gramasi Awal (g):</label><input type="number" id="awal_${s.id}" value="500"></div>
+          <div><label>Gramasi Awal (g):</label><input type="number" id="awal_${s.id}" value="0"></div>
           <div><label>Gramasi Sisa (g):</label><input type="number" id="sisa_${s.id}" class="calc-trigger" placeholder="0"></div>
           <div><label>Kopi Reg (Cup):</label><input type="number" id="kopiReg_${s.id}" class="calc-trigger" placeholder="0"></div>
           <div><label>Kopi Lrg (Cup):</label><input type="number" id="kopiLrg_${s.id}" class="calc-trigger" placeholder="0"></div>
