@@ -10,7 +10,7 @@ const DAFTAR_SIRUP = [
   { id: 'butterscotch', nama: 'Sirup Butterscotch', hgKopiReg: 18000, hgKopiLrg: 28000, hgCrmReg: 18000, hgCrmLrg: 28000 }
 ];
 
-// Mengambil tanggal hari ini secara otomatis (misal: tanggal 22)
+// Mengambil tanggal hari ini secara otomatis
 let selectedDate = new Date().getDate(); 
 
 // RENDER KARTU SIRUP BERDASARKAN DESAIN MODERN SOFT BLUE
@@ -203,18 +203,15 @@ function generateDateStrip() {
 
   const namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
   
-  // Ambil tahun & bulan saat ini agar perhitungan hari presisi
   const now = new Date();
   const year = now.getFullYear();
-  const month = now.getMonth(); // 0 = Januari, 7 = Agustus, dst.
+  const month = now.getMonth();
   
-  // Dapatkan jumlah total hari dalam bulan ini (28/30/31)
   const totalDays = new Date(year, month + 1, 0).getDate();
 
   let html = '';
 
   for (let i = 1; i <= totalDays; i++) {
-    // Ambil indeks hari sesungguhnya berdasarkan tanggal asli
     const dateObj = new Date(year, month, i);
     const dayIndex = dateObj.getDay(); 
     const hari = namaHari[dayIndex];
@@ -227,17 +224,6 @@ function generateDateStrip() {
       </div>
     `;
   }
-
-  container.innerHTML = html;
-
-  // Auto scroll ke tanggal hari ini
-  setTimeout(() => {
-    const activePill = container.querySelector('.date-pill.active');
-    if (activePill) {
-      activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    }
-  }, 300);
-}
 
   container.innerHTML = html;
 
@@ -264,10 +250,10 @@ document.addEventListener('DOMContentLoaded', () => {
   muatDataTanggal(selectedDate);
 
   const monthYearEl = document.getElementById('monthYearText');
-if (monthYearEl) {
-  const opsiBulan = { month: 'long', year: 'numeric' };
-  monthYearEl.innerText = new Date().toLocaleDateString('id-ID', opsiBulan);
-}
+  if (monthYearEl) {
+    const opsiBulan = { month: 'long', year: 'numeric' };
+    monthYearEl.innerText = new Date().toLocaleDateString('id-ID', opsiBulan);
+  }
 
   const btnHitung = document.getElementById('btnHitung');
   const overlay = document.getElementById('pageAuditOverlay');
@@ -301,4 +287,3 @@ if (monthYearEl) {
     }
   });
 });
-      
