@@ -86,8 +86,8 @@ body {
 .date-scroll-wrapper {
   position: relative;
   margin-bottom: 20px;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
 }
 
 .date-strip {
@@ -259,14 +259,16 @@ body {
   border: 1px solid #E2E8F0;
 }
 
-/* FLOATING NAV */
+/* FLOATING NAV (REVISED FOR BETTER CENTERING) */
 .bottom-nav-wrapper {
   position: fixed;
   bottom: 16px;
-  left: 0; right: 0;
+  left: 0; 
+  width: 100%;
   display: flex;
   justify-content: center;
   z-index: 100;
+  pointer-events: none; /* Mencegah memblokir area klik di sekitar navbar */
 }
 
 .floating-nav {
@@ -279,6 +281,7 @@ body {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+  pointer-events: auto;
 }
 
 .nav-btn {
@@ -374,14 +377,24 @@ body {
 .audit-top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
 .audit-box { background: #FFF; padding: 12px; border-radius: 14px; border: 1px solid #E2E8F0; }
 .audit-box h4 { font-size: 11px; margin-bottom: 8px; color: #0284C7; font-weight: 700; }
-.audit-box input { width: 100%; padding: 8px; margin-top: 6px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 12px; background: #F8FAFC; }
+
+/* REVISED INPUT FOR MOBILE ZOOM PREVENT */
+.audit-box input { 
+  width: 100%; 
+  padding: 8px; 
+  margin-top: 6px; 
+  border: 1px solid #CBD5E1; 
+  border-radius: 8px; 
+  font-size: 14px; /* Mencegah auto zoom iOS */
+  background: #F8FAFC; 
+}
 .audit-box input:focus { border-color: #38BDF8; background: #FFF; }
 .input-row-inline { display: flex; gap: 6px; }
 
 .section-title { font-size: 13px; margin: 16px 0 10px 0; color: #334155; font-weight: 800; }
 .syrup-list-grid { display: flex; flex-direction: column; gap: 16px; }
 
-/* BARU: DESAIN MODERN KARTU SIRUP SOFT BLUE */
+/* DESAIN MODERN KARTU SIRUP SOFT BLUE */
 .syrup-card-modern {
   background: #FFFFFF;
   border-radius: 18px;
@@ -434,7 +447,7 @@ body {
   padding: 8px 10px;
   border: 1px solid #CBD5E1;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #1E293B;
   background: #F8FAFC;
@@ -477,7 +490,7 @@ body {
   padding: 8px;
   border: 1px solid #93C5FD;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 13px;
   text-align: center;
   background: #FFFFFF;
   color: #0F172A;
@@ -526,4 +539,5 @@ body {
   background: #FEE2E2;
   color: #991B1B;
   border: 1px solid #FCA5A5;
-}
+  }
+  
