@@ -3,7 +3,6 @@
   margin: 0;
   padding: 0;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  /* Menghilangkan efek sorot/highlight biru saat tombol dipencet di HP */
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
@@ -67,7 +66,6 @@ body {
   color: #0F172A;
 }
 
-/* Tombol Audit dengan Aksen Orange Soft */
 .btn-request {
   background: #FFEDD5;
   border: none;
@@ -84,7 +82,7 @@ body {
   transform: scale(0.95);
 }
 
-/* WRAPPER TANGGAL DENGAN EFEK FADE DI SAMPING */
+/* DATE STRIP HORIZONTAL */
 .date-scroll-wrapper {
   position: relative;
   margin-bottom: 20px;
@@ -99,17 +97,14 @@ body {
   padding: 8px 12px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .date-strip::-webkit-scrollbar {
   display: none;
 }
-.date-strip {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
 
-/* KARTU TANGGAL (PILL) */
 .date-pill {
   flex: 0 0 52px;
   display: flex;
@@ -140,7 +135,6 @@ body {
   margin-top: 2px;
 }
 
-/* State Tanggal Aktif (Soft Blue + Orange Highlight) */
 .date-pill.active {
   border: 2px solid #0284C7;
   background: #FFFFFF;
@@ -181,7 +175,7 @@ body {
   border-radius: 8px;
 }
 
-/* HERO CIRCLE (TOMBOL HITUNG BOUNCE) */
+/* HERO CIRCLE */
 .hero-circle-container {
   display: flex;
   justify-content: center;
@@ -265,12 +259,11 @@ body {
   border: 1px solid #E2E8F0;
 }
 
-/* FLOATING BOTTOM NAV BAR */
+/* FLOATING NAV */
 .bottom-nav-wrapper {
   position: fixed;
   bottom: 16px;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   display: flex;
   justify-content: center;
   z-index: 100;
@@ -314,7 +307,7 @@ body {
   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
 }
 
-/* OVERLAY FULLSCREEN & TRANSISI */
+/* OVERLAY FULLSCREEN AUDIT */
 .overlay-page {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background: #F8FAFC; z-index: 999;
@@ -336,19 +329,14 @@ body {
   border-bottom: 1px solid #E2E8F0; position: sticky; top: 0; z-index: 10;
 }
 
-/* TOMBOL KEMBALI LINGKARAN BERWARNA SOFT BLUE */
 .btn-back-circle {
-  width: 38px;
-  height: 38px;
+  width: 38px; height: 38px;
   border-radius: 50%;
   background: #E0F2FE;
   border: none;
   color: #0284C7;
-  font-size: 18px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 18px; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
 }
@@ -359,15 +347,15 @@ body {
 }
 
 .btn-save {
-  background: #FF7E5F;
+  background: #0284C7;
   color: #FFF;
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: 10px;
   border: none;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 13px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(255, 126, 95, 0.25);
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
 }
 
 .btn-save:active {
@@ -378,105 +366,164 @@ body {
 
 .form-main-title {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
   color: #0F172A;
   margin-bottom: 16px;
 }
 
 .audit-top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-.audit-box { background: #FFF; padding: 10px; border-radius: 12px; border: 1px solid #E2E8F0; }
-.audit-box h4 { font-size: 11px; margin-bottom: 6px; color: #0284C7; }
-.audit-box input { width: 100%; padding: 6px; margin-top: 4px; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 11px; }
-.input-row-inline { display: flex; gap: 4px; }
+.audit-box { background: #FFF; padding: 12px; border-radius: 14px; border: 1px solid #E2E8F0; }
+.audit-box h4 { font-size: 11px; margin-bottom: 8px; color: #0284C7; font-weight: 700; }
+.audit-box input { width: 100%; padding: 8px; margin-top: 6px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 12px; background: #F8FAFC; }
+.audit-box input:focus { border-color: #38BDF8; background: #FFF; }
+.input-row-inline { display: flex; gap: 6px; }
 
-.section-title { font-size: 13px; margin: 10px 0; color: #334155; font-weight: 700; }
-.syrup-list-grid { display: flex; flex-direction: column; gap: 12px; }
+.section-title { font-size: 13px; margin: 16px 0 10px 0; color: #334155; font-weight: 800; }
+.syrup-list-grid { display: flex; flex-direction: column; gap: 16px; }
 
-/* CARD POP-UP ANIMATION */
-@keyframes bounceIn {
-  0% { opacity: 0; transform: scale(0.3) translateY(40px); }
-  50% { opacity: 0.9; transform: scale(1.05) translateY(-5px); }
-  70% { transform: scale(0.95) translateY(2px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.syrup-card {
-  background: #FFF;
-  border-radius: 16px;
-  padding: 14px;
+/* BARU: DESAIN MODERN KARTU SIRUP SOFT BLUE */
+.syrup-card-modern {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 16px;
   border: 1px solid #E2E8F0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  opacity: 0;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.05);
 }
 
-.overlay-page.open .syrup-card {
-  animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-}
-
-.syrup-title {
+.syrup-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 12px;
+}
+
+.syrup-title-text {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: 0.3px;
+}
+
+.badge-terpakai {
+  background: #F1F5F9;
+  color: #475569;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 700;
-  font-size: 13px;
-  color: #0284C7;
-  margin-bottom: 8px;
+  border: 1px solid #E2E8F0;
 }
 
-.badge {
-  padding: 2px 8px;
-  border-radius: 6px;
+.gramasi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.input-group-custom label {
+  display: block;
   font-size: 10px;
-  background: #DCFCE7;
-  color: #15803D;
+  color: #64748B;
   font-weight: 600;
+  margin-bottom: 4px;
 }
 
-.badge.minus {
-  background: #FEE2E2;
-  color: #B91C1C;
+.input-group-custom input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #CBD5E1;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1E293B;
+  background: #F8FAFC;
+  transition: all 0.2s;
 }
 
-.syrup-inputs-grid {
+.input-group-custom input:focus {
+  border-color: #38BDF8;
+  background: #FFFFFF;
+}
+
+.variant-group-box {
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  border-radius: 14px;
+  padding: 12px;
+  border: 1px solid #BAE6FD;
+  margin-bottom: 12px;
+}
+
+.variant-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0284C7;
+  margin-bottom: 6px;
+  margin-top: 6px;
+}
+
+.variant-section-title:first-child {
+  margin-top: 0;
+}
+
+.cup-inputs-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 10px;
 }
 
-.syrup-inputs-grid div {
-  display: flex;
-  flex-direction: column;
-}
-
-.syrup-inputs-grid label {
-  font-size: 11px;
-  color: #64748B;
-  margin-bottom: 2px;
-}
-
-.syrup-inputs-grid input {
-  padding: 6px 8px;
-  border: 1px solid #CBD5E1;
-  border-radius: 6px;
+.cup-inputs-grid input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #93C5FD;
+  border-radius: 8px;
   font-size: 12px;
+  text-align: center;
+  background: #FFFFFF;
+  color: #0F172A;
+  font-weight: 600;
 }
 
-.syrup-total-money {
-  margin-top: 10px;
+.syrup-money-text {
   font-size: 11px;
   font-weight: 700;
-  color: #0F172A;
+  color: #475569;
   text-align: right;
+  margin-bottom: 8px;
 }
 
-.syrup-result-box {
-  margin-top: 6px;
+.status-indicator-box {
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.status-indicator-box.pas {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #86EFAC;
+}
+
+.status-indicator-box.pas .check-icon {
+  width: 20px;
+  height: 20px;
+  background: #22C55E;
+  color: #FFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 11px;
-  font-weight: 600;
-  padding: 6px;
-  border-radius: 6px;
-  background: #F1F5F9;
-  text-align: center;
-  }
-  
+}
+
+.status-indicator-box.minus {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FCA5A5;
+}
