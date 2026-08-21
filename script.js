@@ -1,4 +1,4 @@
-// LIST VARIAN RASA SIRUP (TANPA EMOJI & DEFAULT VAL 0)
+// LIST VARIAN RASA SIRUP
 const DAFTAR_SIRUP = [
   { id: 'aren', nama: 'Sirup Aren', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
   { id: 'pandan', nama: 'Sirup Pandan', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
@@ -10,9 +10,10 @@ const DAFTAR_SIRUP = [
   { id: 'butterscotch', nama: 'Sirup Butterscotch', hgKopiReg: 18000, hgKopiLrg: 28000, hgCrmReg: 18000, hgCrmLrg: 28000 }
 ];
 
-let selectedDate = 18; // Tanggal default aktif
+// Mengambil tanggal hari ini secara otomatis (misal: tanggal 22)
+let selectedDate = new Date().getDate(); 
 
-// RENDER ELEMEN CARD SIRUP
+// RENDER KARTU SIRUP BERDASARKAN DESAIN MODERN SOFT BLUE
 function renderSyrupCards() {
   const container = document.getElementById('syrupContainer');
   if (!container) return;
@@ -20,28 +21,50 @@ function renderSyrupCards() {
   container.innerHTML = '';
   DAFTAR_SIRUP.forEach(s => {
     const cardHtml = `
-      <div class="syrup-card" id="card_${s.id}">
-        <div class="syrup-title">
-          <span>${s.nama}</span>
-          <span class="badge" id="badge_${s.id}">Aman</span>
+      <div class="syrup-card-modern" id="card_${s.id}">
+        <div class="syrup-header">
+          <span class="syrup-title-text">${s.nama.toUpperCase()}</span>
+          <span class="badge-terpakai" id="terpakai_${s.id}">Terpakai: 0g</span>
         </div>
-        <div class="syrup-inputs-grid">
-          <div><label>Gramasi Awal (g):</label><input type="number" id="awal_${s.id}" class="calc-trigger" placeholder="0"></div>
-          <div><label>Gramasi Sisa (g):</label><input type="number" id="sisa_${s.id}" class="calc-trigger" placeholder="0"></div>
-          <div><label>Kopi Reg (Cup):</label><input type="number" id="kopiReg_${s.id}" class="calc-trigger" placeholder="0"></div>
-          <div><label>Kopi Lrg (Cup):</label><input type="number" id="kopiLrg_${s.id}" class="calc-trigger" placeholder="0"></div>
-          <div><label>Creamy Reg (Cup):</label><input type="number" id="crmReg_${s.id}" class="calc-trigger" placeholder="0"></div>
-          <div><label>Creamy Lrg (Cup):</label><input type="number" id="crmLrg_${s.id}" class="calc-trigger" placeholder="0"></div>
+
+        <div class="gramasi-grid">
+          <div class="input-group-custom">
+            <label>Gramasi Dibawa (g)</label>
+            <input type="number" id="awal_${s.id}" class="calc-trigger" placeholder="0" inputmode="numeric">
+          </div>
+          <div class="input-group-custom">
+            <label>Gramasi Sisa (g)</label>
+            <input type="number" id="sisa_${s.id}" class="calc-trigger" placeholder="0" inputmode="numeric">
+          </div>
         </div>
-        <div class="syrup-total-money" id="money_${s.id}">Total Uang: Rp 0</div>
-        <div class="syrup-result-box" id="res_${s.id}">Selisih Gramasi: Pas (0g)</div>
+
+        <div class="variant-group-box">
+          <div class="variant-section-title">Varian Kopi</div>
+          <div class="cup-inputs-grid">
+            <input type="number" id="kopiReg_${s.id}" class="calc-trigger" placeholder="Normal (Cup)" inputmode="numeric">
+            <input type="number" id="kopiLrg_${s.id}" class="calc-trigger" placeholder="Large (Cup)" inputmode="numeric">
+          </div>
+
+          <div class="variant-section-title">Varian Creamy</div>
+          <div class="cup-inputs-grid">
+            <input type="number" id="crmReg_${s.id}" class="calc-trigger" placeholder="Normal (Cup)" inputmode="numeric">
+            <input type="number" id="crmLrg_${s.id}" class="calc-trigger" placeholder="Large (Cup)" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="syrup-money-text" id="money_${s.id}">Total Nilai: Rp 0</div>
+
+        <div class="status-indicator-box pas" id="statusBox_${s.id}">
+          <div class="check-icon">✓</div>
+          <span>Pas / Aman</span>
+        </div>
       </div>
     `;
     container.innerHTML += cardHtml;
   });
 }
 
-// SIMPAN DATA KE LOCALSTORAGE SESUAI TANGGAL
+// SIMPAN DATA KE LOCALSTORAGE BERDASARKAN TANGGAL
 function simpanDataTanggal() {
   const dataForm = {
     sisaCupReg: document.getElementById('sisaCupReg')?.value || '',
@@ -63,17 +86,15 @@ function simpanDataTanggal() {
     };
   });
 
-  // Simpan JSON dengan Key khusus per tanggal
   localStorage.setItem(`audit_data_${selectedDate}`, JSON.stringify(dataForm));
   hitungSemuaAudit();
 }
 
-// MUAT DATA DARI LOCALSTORAGE BERDASARKAN TANGGAL
+// MUAT DATA LOCALSTORAGE TANGGAL TERPILIH
 function muatDataTanggal(tgl) {
   selectedDate = tgl;
   const savedDataRaw = localStorage.getItem(`audit_data_${selectedDate}`);
 
-  // Reset/Kosongkan Form Terlebih Dahulu
   document.getElementById('sisaCupReg').value = '';
   document.getElementById('sisaCupLrg').value = '';
   document.getElementById('inputUangTas').value = '';
@@ -89,7 +110,6 @@ function muatDataTanggal(tgl) {
     document.getElementById(`crmLrg_${s.id}`).value = '';
   });
 
-  // Jika ada simpanan data di tanggal ini, isi form otomatis
   if (savedDataRaw) {
     const data = JSON.parse(savedDataRaw);
     
@@ -116,7 +136,7 @@ function muatDataTanggal(tgl) {
   hitungSemuaAudit();
 }
 
-// LOGIKA PEMROSESAN HITUNG AUDIT
+// KHUSUS PERHITUNGAN AUDIT & INDIKATOR STATUS
 function hitungSemuaAudit() {
   let totalOmzetSemua = 0;
   let totalCupRegSemua = 0;
@@ -139,25 +159,31 @@ function hitungSemuaAudit() {
     totalOmzetSemua += totalUangSirup;
 
     const moneyEl = document.getElementById(`money_${s.id}`);
-    if (moneyEl) moneyEl.innerText = `Total Uang: Rp ${totalUangSirup.toLocaleString()}`;
+    if (moneyEl) moneyEl.innerText = `Total Nilai: Rp ${totalUangSirup.toLocaleString('id-ID')}`;
 
-    const terpakai = awal - sisa;
-    const maxToleransi = ((kpReg + crReg) * 18) + ((kpLrg + crLrg) * 28);
-    const resBox = document.getElementById(`res_${s.id}`);
-    const badge = document.getElementById(`badge_${s.id}`);
+    const terpakai = (awal > sisa) ? (awal - sisa) : 0;
+    const terpakaiEl = document.getElementById(`terpakai_${s.id}`);
+    if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
 
-    if (resBox && badge) {
-      if (terpakai <= maxToleransi) {
-        resBox.innerText = `Terpakai: ${terpakai}g | Limit: ${maxToleransi}g (🟢 Pas/Aman)`;
-        resBox.style.color = "#166534";
-        badge.innerText = "Aman";
-        badge.className = "badge";
+    const limitResep = ((kpReg + crReg) * 18) + ((kpLrg + crLrg) * 28);
+    const statusBox = document.getElementById(`statusBox_${s.id}`);
+
+    if (statusBox) {
+      if (terpakai <= limitResep) {
+        statusBox.className = "status-indicator-box pas";
+        statusBox.innerHTML = `
+          <div class="check-icon">✓</div>
+          <span>Pas / Aman</span>
+        `;
       } else {
-        const minus = terpakai - maxToleransi;
-        resBox.innerText = `Terpakai: ${terpakai}g | Limit: ${maxToleransi}g (🔴 Minus ${minus}g)`;
-        resBox.style.color = "#991B1B";
-        badge.innerText = "MINUS";
-        badge.className = "badge minus";
+        const minusG = terpakai - limitResep;
+        const estCup = Math.round(minusG / 20);
+        const teksCup = estCup > 0 ? `(± ${estCup} cup)` : '';
+
+        statusBox.className = "status-indicator-box minus";
+        statusBox.innerHTML = `
+          <span>⚠️ Minus ${minusG}g ${teksCup}</span>
+        `;
       }
     }
   });
@@ -167,19 +193,30 @@ function hitungSemuaAudit() {
   
   const uangTas = parseFloat(document.getElementById('inputUangTas')?.value) || 0;
   const dashUang = document.getElementById('dashUangTas');
-  if (dashUang) dashUang.innerText = `Rp ${uangTas.toLocaleString()}`;
+  if (dashUang) dashUang.innerText = `Rp ${uangTas.toLocaleString('id-ID')}`;
 }
 
-// GENERATE PILAR TANGGAL 1 - 30
+// GENERATE PILL TANGGAL 1 - 31 DENGAN HARI YANG SESUAI KALENDER
 function generateDateStrip() {
   const container = document.getElementById('dateStripContainer');
   if (!container) return;
 
   const namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+  
+  // Ambil tahun & bulan saat ini agar perhitungan hari presisi
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0 = Januari, 7 = Agustus, dst.
+  
+  // Dapatkan jumlah total hari dalam bulan ini (28/30/31)
+  const totalDays = new Date(year, month + 1, 0).getDate();
+
   let html = '';
 
-  for (let i = 1; i <= 30; i++) {
-    const dayIndex = (i + 5) % 7; 
+  for (let i = 1; i <= totalDays; i++) {
+    // Ambil indeks hari sesungguhnya berdasarkan tanggal asli
+    const dateObj = new Date(year, month, i);
+    const dayIndex = dateObj.getDay(); 
     const hari = namaHari[dayIndex];
     const isActive = (i === selectedDate) ? 'active' : '';
 
@@ -193,6 +230,7 @@ function generateDateStrip() {
 
   container.innerHTML = html;
 
+  // Auto scroll ke tanggal hari ini
   setTimeout(() => {
     const activePill = container.querySelector('.date-pill.active');
     if (activePill) {
@@ -201,21 +239,35 @@ function generateDateStrip() {
   }, 300);
 }
 
-// FUNGSI GANTI TANGGAL
+  container.innerHTML = html;
+
+  setTimeout(() => {
+    const activePill = container.querySelector('.date-pill.active');
+    if (activePill) {
+      activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+  }, 300);
+}
+
+// PILIH TANGGAL
 function selectDate(element, tgl) {
   document.querySelectorAll('.date-pill').forEach(pill => pill.classList.remove('active'));
   element.classList.add('active');
   element.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-  
-  // Muat data khusus tanggal yang baru saja diklik
   muatDataTanggal(tgl);
 }
 
-// EVENT LISTENERS & INI
+// EVENT LISTENERS
 document.addEventListener('DOMContentLoaded', () => {
   renderSyrupCards();
   generateDateStrip();
   muatDataTanggal(selectedDate);
+
+  const monthYearEl = document.getElementById('monthYearText');
+if (monthYearEl) {
+  const opsiBulan = { month: 'long', year: 'numeric' };
+  monthYearEl.innerText = new Date().toLocaleDateString('id-ID', opsiBulan);
+}
 
   const btnHitung = document.getElementById('btnHitung');
   const overlay = document.getElementById('pageAuditOverlay');
@@ -237,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnSelesai && overlay) {
     btnSelesai.addEventListener('click', () => {
-      simpanDataTanggal(); // Simpan saat pencet tombol Simpan
+      simpanDataTanggal();
       overlay.classList.remove('open');
     });
   }
@@ -245,7 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('input', (e) => {
     if (e.target.classList.contains('calc-trigger') || e.target.id === 'inputUangTas') {
       hitungSemuaAudit();
-      simpanDataTanggal(); // Otomatis simpan setiap kali diketik
+      simpanDataTanggal();
     }
   });
 });
+      
