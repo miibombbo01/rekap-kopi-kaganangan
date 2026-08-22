@@ -1,4 +1,4 @@
-// LIST VARIAN RASA SIRUP
+// LIST DAFTAR SIRUP
 const DAFTAR_SIRUP = [
   { id: 'aren', nama: 'Sirup Aren', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
   { id: 'pandan', nama: 'Sirup Pandan', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
@@ -10,10 +10,14 @@ const DAFTAR_SIRUP = [
   { id: 'butterscotch', nama: 'Sirup Butterscotch', hgKopiReg: 18000, hgKopiLrg: 28000, hgCrmReg: 18000, hgCrmLrg: 28000 }
 ];
 
-// Mengambil tanggal hari ini secara otomatis
-let selectedDate = new Date().getDate(); 
+let selectedDate = new Date().getDate();
+let selectedCabang = 'sulaiman_simpang5'; // Default Cabang
 
-// RENDER KARTU SIRUP BERDASARKAN DESAIN MODERN SOFT BLUE
+// GRAMASI GLOBAL DEFAULT
+let globalGramReg = 18;
+let globalGramLrg = 28;
+
+// RENDER KARTU SIRUP
 function renderSyrupCards() {
   const container = document.getElementById('syrupContainer');
   if (!container) return;
@@ -64,8 +68,28 @@ function renderSyrupCards() {
   });
 }
 
-// SIMPAN DATA KE LOCALSTORAGE BERDASARKAN TANGGAL
+// BUKA ATAU GANTI CABANG / KARYAWAN
+function gantiKaryawanCabang(val) {
+  selectedCabang = val;
+  const displayCabang = document.getElementById('displayCabang');
+  const displayKaryawan = document.getElementById('displayKaryawan');
+
+  if (val === 'sulaiman_simpang5') {
+    displayCabang.innerText = 'Kopi Kaganangan - Cabang Simpang 5';
+    displayKaryawan.innerText = 'Sulaiman';
+  } else if (val === 'abdullah_pasar_timpah') {
+    displayCabang.innerText = 'Kopi Kaganangan - Pasar Timpah';
+    displayKaryawan.innerText = 'Abdullah';
+  }
+
+  // Reload data sesuai cabang yang dipilih
+  muatDataTanggal(selectedDate);
+}
+
+// SIMPAN DATA AUDIT BERDASARKAN TANGGAL & CABANG
 function simpanDataTanggal() {
+  const storageKey = `audit_data_${selectedCabang}_${selectedDate}`;
+  
   const dataForm = {
     sisaCupReg: document.getElementById('sisaCupReg')?.value || '',
     sisaCupLrg: document.getElementById('sisaCupLrg')?.value || '',
@@ -86,15 +110,17 @@ function simpanDataTanggal() {
     };
   });
 
-  localStorage.setItem(`audit_data_${selectedDate}`, JSON.stringify(dataForm));
+  localStorage.setItem(storageKey, JSON.stringify(dataForm));
   hitungSemuaAudit();
 }
 
-// MUAT DATA LOCALSTORAGE TANGGAL TERPILIH
+// MUAT DATA DARI LOCALSTORAGE
 function muatDataTanggal(tgl) {
   selectedDate = tgl;
-  const savedDataRaw = localStorage.getItem(`audit_data_${selectedDate}`);
+  const storageKey = `audit_data_${selectedCabang}_${selectedDate}`;
+  const savedDataRaw = localStorage.getItem(storageKey);
 
+  // Clear Form First
   document.getElementById('sisaCupReg').value = '';
   document.getElementById('sisaCupLrg').value = '';
   document.getElementById('inputUangTas').value = '';
@@ -112,7 +138,6 @@ function muatDataTanggal(tgl) {
 
   if (savedDataRaw) {
     const data = JSON.parse(savedDataRaw);
-    
     document.getElementById('sisaCupReg').value = data.sisaCupReg || '';
     document.getElementById('sisaCupLrg').value = data.sisaCupLrg || '';
     document.getElementById('inputUangTas').value = data.inputUangTas || '';
@@ -136,11 +161,13 @@ function muatDataTanggal(tgl) {
   hitungSemuaAudit();
 }
 
-// KHUSUS PERHITUNGAN AUDIT & INDIKATOR STATUS
+// PERHITUNGAN AUDIT & TAMPILAN DASHBOARD
 function hitungSemuaAudit() {
   let totalOmzetSemua = 0;
   let totalCupRegSemua = 0;
   let totalCupLrgSemua = 0;
+
+  muatSettingGramasi(); // Pastikan nilai gramasi sesuai setting global
 
   DAFTAR_SIRUP.forEach(s => {
     const awal = parseFloat(document.getElementById(`awal_${s.id}`)?.value) || 0;
@@ -165,56 +192,82 @@ function hitungSemuaAudit() {
     const terpakaiEl = document.getElementById(`terpakai_${s.id}`);
     if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
 
-    const limitResep = ((kpReg + crReg) * 18) + ((kpLrg + crLrg) * 28);
+    const limitResep = ((kpReg + crReg) * globalGramReg) + ((kpLrg + crLrg) * globalGramLrg);
     const statusBox = document.getElementById(`statusBox_${s.id}`);
 
     if (statusBox) {
       if (terpakai <= limitResep) {
         statusBox.className = "status-indicator-box pas";
-        statusBox.innerHTML = `
-          <div class="check-icon">✓</div>
-          <span>Pas / Aman</span>
-        `;
+        statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
       } else {
         const minusG = terpakai - limitResep;
-        const estCup = Math.round(minusG / 20);
+        const estCup = Math.round(minusG / globalGramReg);
         const teksCup = estCup > 0 ? `(± ${estCup} cup)` : '';
 
         statusBox.className = "status-indicator-box minus";
-        statusBox.innerHTML = `
-          <span>⚠️ Minus ${minusG}g ${teksCup}</span>
-        `;
+        statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g ${teksCup}</span>`;
       }
     }
   });
 
+  // Update Mini Board 1: Cup Terjual
   const dashCup = document.getElementById('dashCupTerjual');
   if (dashCup) dashCup.innerText = `${totalCupRegSemua} Reg | ${totalCupLrgSemua} Lrg`;
+
+  // Logika Emoji Penjualan Cup
+  const totalCupKeseluruhan = totalCupRegSemua + totalCupLrgSemua;
+  const dashCupEmoji = document.getElementById('dashCupEmoji');
+  if (dashCupEmoji) {
+    if (totalCupKeseluruhan > 50) {
+      dashCupEmoji.innerText = '🤩';
+    } else if (totalCupKeseluruhan > 40) {
+      dashCupEmoji.innerText = '😁';
+    } else if (totalCupKeseluruhan > 30) {
+      dashCupEmoji.innerText = '😊';
+    } else {
+      dashCupEmoji.innerText = '🥲';
+    }
+  }
+
+  // Update Mini Board 2: Total Uang
+  const uangFisik = parseFloat(document.getElementById('inputUangTas')?.value) || 0;
+  const qris = parseFloat(document.getElementById('inputQRIS')?.value) || 0;
+  const pengeluaran = parseFloat(document.getElementById('inputPengeluaran')?.value) || 0;
+
+  // Rumus: Total Semua Uang (Fisik + QRIS - Pengeluaran)
+  const totalUangAkhir = (uangFisik + qris) - pengeluaran;
   
-  const uangTas = parseFloat(document.getElementById('inputUangTas')?.value) || 0;
-  const dashUang = document.getElementById('dashUangTas');
-  if (dashUang) dashUang.innerText = `Rp ${uangTas.toLocaleString('id-ID')}`;
+  const dashTotalUang = document.getElementById('dashTotalUang');
+  if (dashTotalUang) dashTotalUang.innerText = `Rp ${totalUangAkhir.toLocaleString('id-ID')}`;
+
+  // Keterangan Pas atau Minus
+  const dashUangStatus = document.getElementById('dashUangStatus');
+  if (dashUangStatus) {
+    const selisih = totalUangAkhir - totalOmzetSemua;
+    if (selisih >= 0) {
+      dashUangStatus.innerHTML = `<span class="status-badge-inline pas">✓ Pas</span>`;
+    } else {
+      const minusRibu = Math.abs(selisih) / 1000;
+      dashUangStatus.innerHTML = `<span class="status-badge-inline minus">Minus ${minusRibu}k</span>`;
+    }
+  }
 }
 
-// GENERATE PILL TANGGAL 1 - 31 DENGAN HARI YANG SESUAI KALENDER
+// GENERATE PILL TANGGAL
 function generateDateStrip() {
   const container = document.getElementById('dateStripContainer');
   if (!container) return;
 
   const namaHari = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-  
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
-  
   const totalDays = new Date(year, month + 1, 0).getDate();
 
   let html = '';
-
   for (let i = 1; i <= totalDays; i++) {
     const dateObj = new Date(year, month, i);
-    const dayIndex = dateObj.getDay(); 
-    const hari = namaHari[dayIndex];
+    const hari = namaHari[dateObj.getDay()];
     const isActive = (i === selectedDate) ? 'active' : '';
 
     html += `
@@ -224,7 +277,6 @@ function generateDateStrip() {
       </div>
     `;
   }
-
   container.innerHTML = html;
 
   setTimeout(() => {
@@ -235,7 +287,6 @@ function generateDateStrip() {
   }, 300);
 }
 
-// PILIH TANGGAL
 function selectDate(element, tgl) {
   document.querySelectorAll('.date-pill').forEach(pill => pill.classList.remove('active'));
   element.classList.add('active');
@@ -243,10 +294,40 @@ function selectDate(element, tgl) {
   muatDataTanggal(tgl);
 }
 
-// EVENT LISTENERS
+// SIMPAN & MUAT SETTING GRAMASI GLOBAL
+function simpanSettingGramasi() {
+  const gReg = parseFloat(document.getElementById('settingGramReg')?.value) || 18;
+  const gLrg = parseFloat(document.getElementById('settingGramLrg')?.value) || 28;
+
+  globalGramReg = gReg;
+  globalGramLrg = gLrg;
+
+  localStorage.setItem('setting_gram_reg', gReg);
+  localStorage.setItem('setting_gram_lrg', gLrg);
+
+  hitungSemuaAudit();
+}
+
+function muatSettingGramasi() {
+  const gReg = localStorage.getItem('setting_gram_reg');
+  const gLrg = localStorage.getItem('setting_gram_lrg');
+
+  if (gReg) globalGramReg = parseFloat(gReg);
+  if (gLrg) globalGramLrg = parseFloat(gLrg);
+
+  if (document.getElementById('settingGramReg')) {
+    document.getElementById('settingGramReg').value = globalGramReg;
+  }
+  if (document.getElementById('settingGramLrg')) {
+    document.getElementById('settingGramLrg').value = globalGramLrg;
+  }
+}
+
+// INIT EVENT LISTENERS
 document.addEventListener('DOMContentLoaded', () => {
   renderSyrupCards();
   generateDateStrip();
+  muatSettingGramasi();
   muatDataTanggal(selectedDate);
 
   const monthYearEl = document.getElementById('monthYearText');
@@ -255,35 +336,43 @@ document.addEventListener('DOMContentLoaded', () => {
     monthYearEl.innerText = new Date().toLocaleDateString('id-ID', opsiBulan);
   }
 
-  const btnHitung = document.getElementById('btnHitung');
-  const overlay = document.getElementById('pageAuditOverlay');
-  const btnTutup = document.getElementById('btnTutup');
-  const btnSelesai = document.getElementById('btnSelesai');
+  // Modals & Nav Trigger
+  const overlayAudit = document.getElementById('pageAuditOverlay');
+  const overlaySetting = document.getElementById('pageSettingOverlay');
 
-  if (btnHitung && overlay) {
-    btnHitung.addEventListener('click', () => {
-      overlay.scrollTop = 0;
-      overlay.classList.add('open');
-    });
-  }
+  document.getElementById('btnHitung')?.addEventListener('click', () => {
+    overlayAudit.scrollTop = 0;
+    overlayAudit.classList.add('open');
+  });
 
-  if (btnTutup && overlay) {
-    btnTutup.addEventListener('click', () => {
-      overlay.classList.remove('open');
-    });
-  }
+  document.getElementById('btnTutup')?.addEventListener('click', () => {
+    overlayAudit.classList.remove('open');
+  });
 
-  if (btnSelesai && overlay) {
-    btnSelesai.addEventListener('click', () => {
-      simpanDataTanggal();
-      overlay.classList.remove('open');
-    });
-  }
+  document.getElementById('btnSelesai')?.addEventListener('click', () => {
+    simpanDataTanggal();
+    overlayAudit.classList.remove('open');
+  });
+
+  document.getElementById('btnNavSetting')?.addEventListener('click', () => {
+    muatSettingGramasi();
+    overlaySetting.classList.add('open');
+  });
+
+  document.getElementById('btnTutupSetting')?.addEventListener('click', () => {
+    overlaySetting.classList.remove('open');
+  });
+
+  document.getElementById('btnSimpanSetting')?.addEventListener('click', () => {
+    simpanSettingGramasi();
+    overlaySetting.classList.remove('open');
+  });
 
   document.addEventListener('input', (e) => {
-    if (e.target.classList.contains('calc-trigger') || e.target.id === 'inputUangTas') {
+    if (e.target.classList.contains('calc-trigger') || e.target.id === 'inputUangTas' || e.target.id === 'inputQRIS' || e.target.id === 'inputPengeluaran') {
       hitungSemuaAudit();
       simpanDataTanggal();
     }
   });
 });
+
