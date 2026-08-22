@@ -5,48 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kopi Kaganangan - Rekap Harian</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <div id="pageDashboard" class="page-container">
     
+    <!-- HEADER BARU: Judul Kiri & Bulan/Tahun Kanan -->
     <header class="app-header">
-      <span class="time-status">09:41</span>
-      <div class="header-right">
-        <select id="selectKaryawan" class="select-user">
-          <option value="randi">Randi</option>
-          <option value="karyawan2">Shift 2</option>
-        </select>
+      <h1 class="brand-title">Kopi Kaganangan</h1>
+      <div class="month-title-right">
+        <!-- Icon SVG Kalender -->
+        <svg class="icon-cal-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span id="monthYearText">Agustus 2026</span>
       </div>
     </header>
 
-    <div class="month-bar">
-      <div class="month-title">
-        <span class="icon-cal">📅</span>
-        <h2 id="monthYearText">Agustus 2026</h2>
-      </div>
-      <button class="btn-request">Audit +</button>
-    </div>
-
-    <!-- TANGGAL UTAMA HANYA 1 (DIGENERATE LEWAT JS) -->
+    <!-- TANGGAL STRIP -->
     <div class="date-scroll-wrapper">
       <section class="date-strip" id="dateStripContainer">
-        <!-- Generasi 30 tanggal oleh JS -->
+        <!-- Generasi tanggal oleh JS -->
       </section>
     </div>
 
+    <!-- CARD CABANG & DROP DOWN KARYAWAN -->
     <div class="location-card">
-      <div class="loc-info">
+      <div class="loc-header-info">
         <span class="pin-icon">📍</span>
-        <div>
-          <p class="loc-label">Cabang Outlet</p>
-          <p class="loc-name">Kopi Kaganangan - Outlet Utama</p>
+        <div class="loc-text-group">
+          <p class="loc-brand-title" id="displayCabang">Kopi Kaganangan - Cabang Simpang 5</p>
+          <p class="loc-employee-name" id="displayKaryawan">Sulaiman</p>
         </div>
       </div>
-      <span class="badge-dist">Aktif</span>
+      
+      <!-- Custom Dropdown Selector -->
+      <div class="custom-select-wrapper">
+        <span class="select-label-top">Pilih Karyawan</span>
+        <div class="select-box-pill">
+          <select id="selectKaryawanCabang" onchange="gantiKaryawanCabang(this.value)">
+            <option value="sulaiman_simpang5">Sulaiman - Simpang 5</option>
+            <option value="abdullah_pasar_timpah">Abdullah - Pasar Timpah</option>
+          </select>
+          <span class="arrow-down">▼</span>
+        </div>
+      </div>
     </div>
 
+    <!-- TOMBOL UTAMA HITUNG -->
     <div class="hero-circle-container">
       <div class="outer-ring">
         <button id="btnHitung" class="btn-hitung-circle">
@@ -55,28 +65,29 @@
       </div>
     </div>
 
-    <div class="summary-triple-grid">
-      <div class="mini-board">
-        <div class="icon-circle yellow">🥤</div>
-        <p class="board-title">Cup Terjual</p>
+    <!-- 2 BOARD RANGKUMAN (Cup Terjual & Total Uang) -->
+    <div class="summary-double-grid">
+      <!-- Board 1: Cup Terjual -->
+      <div class="main-board">
+        <div class="board-header">
+          <div class="icon-circle yellow">🥤</div>
+          <p class="board-title">Cup Terjual</p>
+        </div>
         <p class="board-value" id="dashCupTerjual">0 Reg | 0 Lrg</p>
+        <div class="board-footer-status" id="dashCupEmoji">🥲</div>
       </div>
 
-      <div class="mini-board">
-        <div class="icon-circle red">💵</div>
-        <p class="board-title">Uang Tas</p>
-        <p class="board-value" id="dashUangTas">Rp 0</p>
+      <!-- Board 2: Total Uang -->
+      <div class="main-board">
+        <div class="board-header">
+          <div class="icon-circle green">💵</div>
+          <p class="board-title">Total Uang</p>
+        </div>
+        <p class="board-value" id="dashTotalUang">Rp 0</p>
+        <div class="board-footer-status" id="dashUangStatus">
+          <span class="status-badge-inline pas">✓</span>
+        </div>
       </div>
-
-      <div class="mini-board">
-        <div class="icon-circle blue">📊</div>
-        <p class="board-title">Status Audit</p>
-        <p class="board-value status-ok" id="dashStatusAudit">Aman</p>
-      </div>
-    </div>
-
-    <div class="status-banner">
-      <span>🏠 Shift Hari Ini: Kopi & Creamy Ready</span>
     </div>
 
   </div>
@@ -84,12 +95,8 @@
   <!-- OVERLAY AUDIT -->
   <div id="pageAuditOverlay" class="overlay-page">
     <div class="overlay-header">
-      <!-- Tombol Kembali berupa lingkaran panah -->
       <button id="btnTutup" class="btn-back-circle">←</button>
-      
-      <!-- Hapus judul h3 di atas agar langsung form -->
       <div></div> 
-      
       <button id="btnSelesai" class="btn-save">Simpan</button>
     </div>
 
@@ -106,7 +113,7 @@
         </div>
         <div class="audit-box">
           <h4>💵 Input Uang & QRIS</h4>
-          <input type="number" id="inputUangTas" inputmode="numeric" placeholder="Uang di Tas (Rp)">
+          <input type="number" id="inputUangTas" inputmode="numeric" placeholder="Uang Fisik (Rp)">
           <input type="number" id="inputQRIS" inputmode="numeric" placeholder="Nominal QRIS (Rp)">
           <input type="number" id="inputPengeluaran" inputmode="numeric" placeholder="Kasbon/Pengeluaran (Rp)">
         </div>
@@ -117,16 +124,56 @@
     </div>
   </div>
 
+  <!-- OVERLAY PENGATURAN (MODAL SETTING) -->
+  <div id="pageSettingOverlay" class="overlay-page">
+    <div class="overlay-header">
+      <button id="btnTutupSetting" class="btn-back-circle">←</button>
+      <h3 style="font-size: 15px; font-weight: 700;">Pengaturan Gramasi</h3>
+      <button id="btnSimpanSetting" class="btn-save">Simpan</button>
+    </div>
+
+    <div class="overlay-content">
+      <p style="font-size: 12px; color: #64748B; margin-bottom: 16px;">Pengaturan ini berlaku secara menyeluruh untuk semua tanggal & karyawan.</p>
+      
+      <div class="audit-box" style="margin-bottom: 12px;">
+        <h4>☕ Gramasi Kopi & Sirup Size Normal</h4>
+        <div class="input-group-custom" style="margin-bottom: 8px;">
+          <label>Takaran Normal (gram)</label>
+          <input type="number" id="settingGramReg" placeholder="18">
+        </div>
+      </div>
+
+      <div class="audit-box">
+        <h4>☕ Gramasi Kopi & Sirup Size Large</h4>
+        <div class="input-group-custom">
+          <label>Takaran Large (gram)</label>
+          <input type="number" id="settingGramLrg" placeholder="28">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING NAVBAR (3 BUTTONS, WHITE BG WITH SHADOW & STROKE) -->
   <div class="bottom-nav-wrapper">
-    <nav class="floating-nav">
-      <button class="nav-btn active"><span>🏠</span></button>
-      <button class="nav-btn"><span>📅</span></button>
-      <button class="nav-btn center-btn"><span>+</span></button>
-      <button class="nav-btn"><span>📊</span></button>
-      <button class="nav-btn"><span>👤</span></button>
+    <nav class="floating-nav-white">
+      <button class="nav-btn-icon" id="btnNavRekap">
+        <!-- Icon Grafik/Statistik -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      </button>
+
+      <button class="nav-btn-icon center-setting-btn" id="btnNavSetting">
+        <!-- Icon Roda Gerigi Setting -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+
+      <button class="nav-btn-icon" id="btnNavProfile">
+        <!-- Icon Profil -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
     </nav>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+  
