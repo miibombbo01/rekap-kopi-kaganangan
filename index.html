@@ -11,11 +11,10 @@
 
   <div id="pageDashboard" class="page-container">
     
-    <!-- HEADER BARU: Judul Kiri & Bulan/Tahun Kanan -->
+    <!-- HEADER BARU -->
     <header class="app-header">
       <h1 class="brand-title">Kopi Kaganangan</h1>
       <div class="month-title-right">
-        <!-- Icon SVG Kalender -->
         <svg class="icon-cal-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -34,58 +33,60 @@
     </div>
 
     <!-- CARD CABANG & DROP DOWN KARYAWAN -->
-    <div class="location-card">
+    <div class="location-card pop-anim">
       <div class="loc-header-info">
         <span class="pin-icon">📍</span>
         <div class="loc-text-group">
-          <p class="loc-brand-title" id="displayCabang">Kopi Kaganangan - Cabang Simpang 5</p>
+          <p class="loc-brand-blue">Kopi Kaganangan</p>
+          <p class="loc-branch-bold" id="displayCabang">Pasar Timpah</p>
           <p class="loc-employee-name" id="displayKaryawan">Sulaiman</p>
         </div>
       </div>
       
-      <!-- Custom Dropdown Selector -->
+      <!-- Custom Dropdown Selector Tengah -->
       <div class="custom-select-wrapper">
-        <span class="select-label-top">Pilih Karyawan</span>
+        <span class="select-label-top">PILIH KARYAWAN</span>
         <div class="select-box-pill">
           <select id="selectKaryawanCabang" onchange="gantiKaryawanCabang(this.value)">
-            <option value="sulaiman_simpang5">Sulaiman - Simpang 5</option>
-            <option value="abdullah_pasar_timpah">Abdullah - Pasar Timpah</option>
+            <option value="sulaiman_simpang5">Sulaiman</option>
+            <option value="abdullah_pasar_timpah">Abdullah</option>
           </select>
           <span class="arrow-down">▼</span>
         </div>
       </div>
     </div>
 
-    <!-- TOMBOL UTAMA HITUNG -->
-    <div class="hero-circle-container">
-      <div class="outer-ring">
-        <button id="btnHitung" class="btn-hitung-circle">
-          <span>HITUNG</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- 2 BOARD RANGKUMAN (Cup Terjual & Total Uang) -->
-    <div class="summary-double-grid">
-      <!-- Board 1: Cup Terjual -->
-      <div class="main-board">
-        <div class="board-header">
-          <div class="icon-circle yellow">🥤</div>
-          <p class="board-title">Cup Terjual</p>
+    <!-- MAIN CONTENT FLEX WRAPPER (MEMASTIKAN PAS DENGAN SCREEN) -->
+    <div class="dashboard-main-content">
+      <!-- TOMBOL UTAMA HITUNG (LEBIH BESAR) -->
+      <div class="hero-circle-container pop-anim">
+        <div class="outer-ring">
+          <button id="btnHitung" class="btn-hitung-circle">
+            <span>HITUNG</span>
+          </button>
         </div>
-        <p class="board-value" id="dashCupTerjual">0 Reg | 0 Lrg</p>
-        <div class="board-footer-status" id="dashCupEmoji">🥲</div>
       </div>
 
-      <!-- Board 2: Total Uang -->
-      <div class="main-board">
-        <div class="board-header">
-          <div class="icon-circle green">💵</div>
-          <p class="board-title">Total Uang</p>
+      <!-- 2 BOARD RANGKUMAN (PEPET ATAS BOTTOM BAR) -->
+      <div class="summary-double-grid">
+        <div class="main-board pop-anim">
+          <div class="board-header">
+            <div class="icon-circle yellow">🥤</div>
+            <p class="board-title">Cup Terjual</p>
+          </div>
+          <p class="board-value" id="dashCupTerjual">0 Reg | 0 Lrg</p>
+          <div class="board-footer-status" id="dashCupEmoji">🥲</div>
         </div>
-        <p class="board-value" id="dashTotalUang">Rp 0</p>
-        <div class="board-footer-status" id="dashUangStatus">
-          <span class="status-badge-inline pas">✓</span>
+
+        <div class="main-board pop-anim">
+          <div class="board-header">
+            <div class="icon-circle green">💵</div>
+            <p class="board-title">Total Uang</p>
+          </div>
+          <p class="board-value" id="dashTotalUang">Rp 0</p>
+          <div class="board-footer-status" id="dashUangStatus">
+            <span class="status-badge-inline pas">✓ Pas</span>
+          </div>
         </div>
       </div>
     </div>
@@ -124,7 +125,7 @@
     </div>
   </div>
 
-  <!-- OVERLAY PENGATURAN (MODAL SETTING) -->
+  <!-- OVERLAY PENGATURAN GRAMASI (4 OPSI BARU) -->
   <div id="pageSettingOverlay" class="overlay-page">
     <div class="overlay-header">
       <button id="btnTutupSetting" class="btn-back-circle">←</button>
@@ -133,41 +134,41 @@
     </div>
 
     <div class="overlay-content">
-      <p style="font-size: 12px; color: #64748B; margin-bottom: 16px;">Pengaturan ini berlaku secara menyeluruh untuk semua tanggal & karyawan.</p>
+      <p style="font-size: 12px; color: #64748B; margin-bottom: 16px;">Pengaturan takaran gramasi maksimal per cup untuk sirup dan kopi.</p>
       
-      <div class="audit-box" style="margin-bottom: 12px;">
-        <h4>☕ Gramasi Kopi & Sirup Size Normal</h4>
-        <div class="input-group-custom" style="margin-bottom: 8px;">
-          <label>Takaran Normal (gram)</label>
-          <input type="number" id="settingGramReg" placeholder="18">
+      <div class="setting-grid-4">
+        <div class="audit-box">
+          <h4>🧪 Sirup Ukuran N (Normal)</h4>
+          <input type="number" id="settingSirupN" placeholder="18">
         </div>
-      </div>
-
-      <div class="audit-box">
-        <h4>☕ Gramasi Kopi & Sirup Size Large</h4>
-        <div class="input-group-custom">
-          <label>Takaran Large (gram)</label>
-          <input type="number" id="settingGramLrg" placeholder="28">
+        <div class="audit-box">
+          <h4>🧪 Sirup Ukuran L (Large)</h4>
+          <input type="number" id="settingSirupL" placeholder="28">
+        </div>
+        <div class="audit-box">
+          <h4>☕ Kopi Ukuran N (Normal)</h4>
+          <input type="number" id="settingKopiN" placeholder="18">
+        </div>
+        <div class="audit-box">
+          <h4>☕ Kopi Ukuran L (Large)</h4>
+          <input type="number" id="settingKopiL" placeholder="28">
         </div>
       </div>
     </div>
   </div>
 
-  <!-- FLOATING NAVBAR (3 BUTTONS, WHITE BG WITH SHADOW & STROKE) -->
+  <!-- FLOATING NAVBAR -->
   <div class="bottom-nav-wrapper">
     <nav class="floating-nav-white">
       <button class="nav-btn-icon" id="btnNavRekap">
-        <!-- Icon Grafik/Statistik -->
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
       </button>
 
       <button class="nav-btn-icon center-setting-btn" id="btnNavSetting">
-        <!-- Icon Roda Gerigi Setting -->
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </button>
 
       <button class="nav-btn-icon" id="btnNavProfile">
-        <!-- Icon Profil -->
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </button>
     </nav>
@@ -175,5 +176,5 @@
 
   <script src="script.js"></script>
 </body>
-</html>
+  </html>
   
