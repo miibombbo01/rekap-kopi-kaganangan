@@ -411,3 +411,17 @@ body {
 .status-indicator-box.pas .check-icon { width: 20px; height: 20px; background: #22C55E; color: #FFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; }
 .status-indicator-box.warning-yellow { background: #FEF9C3; color: #854D0E; border: 1px solid #FDE047; }
 .status-indicator-box.danger-red { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+
+/* STYLING TAMBAHAN UNTUK MILKY (NON-KOPI) */
+.variant-group-box.milky-bg {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 1px solid #FCD34D;
+}
+
+.variant-group-box.milky-bg .variant-section-title {
+  color: #D97706;
+}
+
+.milky-card .cup-inputs-grid input {
+  border: 1px solid #FBBF24;
+}
