@@ -104,21 +104,61 @@
     <div class="overlay-content">
       <h3 class="form-main-title">Form Audit & Detail Sirup</h3>
 
-      <div class="audit-top-grid">
-        <div class="audit-box">
-          <h4>🥤 Input Fisik Cup</h4>
-          <div class="input-row-inline">
-            <input type="number" id="sisaCupReg" inputmode="numeric" placeholder="Sisa Reg">
-            <input type="number" id="sisaCupLrg" inputmode="numeric" placeholder="Sisa Lrg">
-          </div>
-        </div>
-        <div class="audit-box">
-          <h4>💵 Input Uang & QRIS</h4>
-          <input type="number" id="inputUangTas" inputmode="numeric" placeholder="Uang Fisik (Rp)">
-          <input type="number" id="inputQRIS" inputmode="numeric" placeholder="Nominal QRIS (Rp)">
-          <input type="number" id="inputPengeluaran" inputmode="numeric" placeholder="Kasbon/Pengeluaran (Rp)">
-        </div>
+      <div class="main-tab-card pop-anim">
+  <div class="tab-nav">
+    <button type="button" class="tab-btn active" onclick="switchTab('cup')">🥤 Cup</button>
+    <button type="button" class="tab-btn" onclick="switchTab('uang')">💰 Uang</button>
+    <button type="button" class="tab-btn" onclick="switchTab('kopi')">☕ Kopi</button>
+  </div>
+
+  <!-- TAB 1: CUP -->
+  <div id="tab-cup" class="tab-content active">
+    <div class="grid-2-col">
+      <div class="input-col-group">
+        <label class="tab-field-label">Cup Dibawa</label>
+        <input type="number" id="cupDibawaReg" class="calc-trigger tab-input" placeholder="Cup Kecil" inputmode="numeric">
+        <input type="number" id="cupDibawaLrg" class="calc-trigger tab-input" placeholder="Cup Besar" inputmode="numeric">
       </div>
+      <div class="input-col-group">
+        <label class="tab-field-label">Sisa Cup</label>
+        <input type="number" id="sisaCupReg" class="calc-trigger tab-input" placeholder="Cup Kecil" inputmode="numeric">
+        <input type="number" id="sisaCupLrg" class="calc-trigger tab-input" placeholder="Cup Besar" inputmode="numeric">
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: UANG -->
+  <div id="tab-uang" class="tab-content">
+    <div class="grid-2-col">
+      <input type="number" id="inputUangTas" class="calc-trigger tab-input" placeholder="Cash (Uang di Tas)" inputmode="numeric">
+      <input type="number" id="inputPengeluaran" class="calc-trigger tab-input" placeholder="Pengeluaran" inputmode="numeric">
+      <input type="number" id="inputQRIS" class="calc-trigger tab-input" placeholder="Nominal QRIS" inputmode="numeric">
+      <input type="number" id="inputKasbon" class="calc-trigger tab-input" placeholder="Kasbon" inputmode="numeric">
+    </div>
+    <div id="statusBoxUang" class="status-indicator-box pas">
+      <div class="check-icon">✓</div>
+      <span>Pas / Aman</span>
+    </div>
+  </div>
+
+  <!-- TAB 3: KOPI -->
+  <div id="tab-kopi" class="tab-content">
+    <div class="grid-2-col">
+      <div class="input-col-group">
+        <label class="tab-field-label">Kopi Dibawa</label>
+        <input type="number" id="kopiDibawa" class="calc-trigger tab-input" placeholder="Jumlah (g)" inputmode="numeric">
+      </div>
+      <div class="input-col-group">
+        <label class="tab-field-label">Kopi Sisa</label>
+        <input type="number" id="kopiSisa" class="calc-trigger tab-input" placeholder="Jumlah (g)" inputmode="numeric">
+      </div>
+    </div>
+    <div id="statusBoxKopi" class="status-indicator-box pas">
+      <div class="check-icon">✓</div>
+      <span>Pas / Aman</span>
+    </div>
+  </div>
+</div>
 
       <h4 class="section-title">Input Varian Sirup & Bahan</h4>
       <div class="syrup-list-grid" id="syrupContainer"></div>
