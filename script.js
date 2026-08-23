@@ -18,6 +18,22 @@ let settingSirupL = 28;
 let settingKopiN = 18;
 let settingKopiL = 28;
 
+// FUNGSI NAVIGASI TAB CARD
+function switchTab(tabName) {
+  const contents = document.querySelectorAll('.tab-content');
+  const buttons = document.querySelectorAll('.tab-btn');
+
+  contents.forEach(c => c.classList.remove('active'));
+  buttons.forEach(b => b.classList.remove('active'));
+
+  const activeContent = document.getElementById(`tab-${tabName}`);
+  if (activeContent) activeContent.classList.add('active');
+  
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.add('active');
+  }
+}
+
 function renderSyrupCards() {
   const container = document.getElementById('syrupContainer');
   if (!container) return;
@@ -87,11 +103,16 @@ function gantiKaryawanCabang(val) {
 function simpanDataTanggal() {
   const storageKey = `audit_data_${selectedCabang}_${selectedDate}`;
   const dataForm = {
+    cupDibawaReg: document.getElementById('cupDibawaReg')?.value || '',
+    cupDibawaLrg: document.getElementById('cupDibawaLrg')?.value || '',
     sisaCupReg: document.getElementById('sisaCupReg')?.value || '',
     sisaCupLrg: document.getElementById('sisaCupLrg')?.value || '',
     inputUangTas: document.getElementById('inputUangTas')?.value || '',
     inputQRIS: document.getElementById('inputQRIS')?.value || '',
     inputPengeluaran: document.getElementById('inputPengeluaran')?.value || '',
+    inputKasbon: document.getElementById('inputKasbon')?.value || '',
+    kopiDibawa: document.getElementById('kopiDibawa')?.value || '',
+    kopiSisa: document.getElementById('kopiSisa')?.value || '',
     sirup: {}
   };
 
@@ -115,38 +136,33 @@ function muatDataTanggal(tgl) {
   const storageKey = `audit_data_${selectedCabang}_${selectedDate}`;
   const savedDataRaw = localStorage.getItem(storageKey);
 
-  document.getElementById('sisaCupReg').value = '';
-  document.getElementById('sisaCupLrg').value = '';
-  document.getElementById('inputUangTas').value = '';
-  document.getElementById('inputQRIS').value = '';
-  document.getElementById('inputPengeluaran').value = '';
+  const fields = ['cupDibawaReg', 'cupDibawaLrg', 'sisaCupReg', 'sisaCupLrg', 'inputUangTas', 'inputQRIS', 'inputPengeluaran', 'inputKasbon', 'kopiDibawa', 'kopiSisa'];
+  fields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = ''; });
 
   DAFTAR_SIRUP.forEach(s => {
-    document.getElementById(`awal_${s.id}`).value = '';
-    document.getElementById(`sisa_${s.id}`).value = '';
-    document.getElementById(`kopiReg_${s.id}`).value = '';
-    document.getElementById(`kopiLrg_${s.id}`).value = '';
-    document.getElementById(`crmReg_${s.id}`).value = '';
-    document.getElementById(`crmLrg_${s.id}`).value = '';
+    if (document.getElementById(`awal_${s.id}`)) document.getElementById(`awal_${s.id}`).value = '';
+    if (document.getElementById(`sisa_${s.id}`)) document.getElementById(`sisa_${s.id}`).value = '';
+    if (document.getElementById(`kopiReg_${s.id}`)) document.getElementById(`kopiReg_${s.id}`).value = '';
+    if (document.getElementById(`kopiLrg_${s.id}`)) document.getElementById(`kopiLrg_${s.id}`).value = '';
+    if (document.getElementById(`crmReg_${s.id}`)) document.getElementById(`crmReg_${s.id}`).value = '';
+    if (document.getElementById(`crmLrg_${s.id}`)) document.getElementById(`crmLrg_${s.id}`).value = '';
   });
 
   if (savedDataRaw) {
     const data = JSON.parse(savedDataRaw);
-    document.getElementById('sisaCupReg').value = data.sisaCupReg || '';
-    document.getElementById('sisaCupLrg').value = data.sisaCupLrg || '';
-    document.getElementById('inputUangTas').value = data.inputUangTas || '';
-    document.getElementById('inputQRIS').value = data.inputQRIS || '';
-    document.getElementById('inputPengeluaran').value = data.inputPengeluaran || '';
+    fields.forEach(f => {
+      if(document.getElementById(f)) document.getElementById(f).value = data[f] || '';
+    });
 
     if (data.sirup) {
       DAFTAR_SIRUP.forEach(s => {
         if (data.sirup[s.id]) {
-          document.getElementById(`awal_${s.id}`).value = data.sirup[s.id].awal || '';
-          document.getElementById(`sisa_${s.id}`).value = data.sirup[s.id].sisa || '';
-          document.getElementById(`kopiReg_${s.id}`).value = data.sirup[s.id].kpReg || '';
-          document.getElementById(`kopiLrg_${s.id}`).value = data.sirup[s.id].kpLrg || '';
-          document.getElementById(`crmReg_${s.id}`).value = data.sirup[s.id].crReg || '';
-          document.getElementById(`crmLrg_${s.id}`).value = data.sirup[s.id].crLrg || '';
+          if (document.getElementById(`awal_${s.id}`)) document.getElementById(`awal_${s.id}`).value = data.sirup[s.id].awal || '';
+          if (document.getElementById(`sisa_${s.id}`)) document.getElementById(`sisa_${s.id}`).value = data.sirup[s.id].sisa || '';
+          if (document.getElementById(`kopiReg_${s.id}`)) document.getElementById(`kopiReg_${s.id}`).value = data.sirup[s.id].kpReg || '';
+          if (document.getElementById(`kopiLrg_${s.id}`)) document.getElementById(`kopiLrg_${s.id}`).value = data.sirup[s.id].kpLrg || '';
+          if (document.getElementById(`crmReg_${s.id}`)) document.getElementById(`crmReg_${s.id}`).value = data.sirup[s.id].crReg || '';
+          if (document.getElementById(`crmLrg_${s.id}`)) document.getElementById(`crmLrg_${s.id}`).value = data.sirup[s.id].crLrg || '';
         }
       });
     }
@@ -155,7 +171,6 @@ function muatDataTanggal(tgl) {
   hitungSemuaAudit();
 }
 
-// LOGIKA PERHITUNGAN AUDIT BERTIKAT (PAS, KUNING, MERAH)
 function hitungSemuaAudit() {
   let totalOmzetSemua = 0;
   let totalCupRegSemua = 0;
@@ -189,21 +204,16 @@ function hitungSemuaAudit() {
     const limitResep = ((kpReg + crReg) * settingSirupN) + ((kpLrg + crLrg) * settingSirupL);
     const statusBox = document.getElementById(`statusBox_${s.id}`);
 
-        if (statusBox) {
+    if (statusBox) {
       if (terpakai <= limitResep) {
-        // PAS / AMAN (HIJAU)
         statusBox.className = "status-indicator-box pas";
         statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
       } else {
         const minusG = terpakai - limitResep;
-        
-        // KUNING: Minus di bawah 15g
         if (minusG < 15) {
           statusBox.className = "status-indicator-box warning-yellow";
           statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g</span>`;
-        } 
-        // MERAH: Minus 15g ke atas
-        else {
+        } else {
           const estCup = Math.round(minusG / settingSirupN);
           statusBox.className = "status-indicator-box danger-red";
           statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g (± ${estCup} cup)</span>`;
@@ -212,6 +222,7 @@ function hitungSemuaAudit() {
     }
   });
 
+  // DASHBOARD CUP
   const dashCup = document.getElementById('dashCupTerjual');
   if (dashCup) dashCup.innerText = `${totalCupRegSemua} Reg | ${totalCupLrgSemua} Lrg`;
 
@@ -224,22 +235,62 @@ function hitungSemuaAudit() {
     else dashCupEmoji.innerText = '🥲';
   }
 
-  const uangFisik = parseFloat(document.getElementById('inputUangTas')?.value) || 0;
+  // AUDIT KEUANGAN
+  const cash = parseFloat(document.getElementById('inputUangTas')?.value) || 0;
   const qris = parseFloat(document.getElementById('inputQRIS')?.value) || 0;
   const pengeluaran = parseFloat(document.getElementById('inputPengeluaran')?.value) || 0;
+  const kasbon = parseFloat(document.getElementById('inputKasbon')?.value) || 0;
 
-  const totalUangAkhir = (uangFisik + qris) - pengeluaran;
+  const totalUangAkhir = cash + qris + pengeluaran + kasbon;
   const dashTotalUang = document.getElementById('dashTotalUang');
   if (dashTotalUang) dashTotalUang.innerText = `Rp ${totalUangAkhir.toLocaleString('id-ID')}`;
 
+  const selisih = totalUangAkhir - totalOmzetSemua;
   const dashUangStatus = document.getElementById('dashUangStatus');
   if (dashUangStatus) {
-    const selisih = totalUangAkhir - totalOmzetSemua;
     if (selisih >= 0) {
       dashUangStatus.innerHTML = `<span class="status-badge-inline pas">✓ Pas</span>`;
     } else {
       const minusRibu = Math.abs(selisih) / 1000;
       dashUangStatus.innerHTML = `<span class="status-badge-inline minus">Minus ${minusRibu}k</span>`;
+    }
+  }
+
+  const statusUangBox = document.getElementById('statusBoxUang');
+  if (statusUangBox) {
+    if (selisih === 0) {
+      statusUangBox.className = "status-indicator-box pas";
+      statusUangBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
+    } else if (selisih < 0) {
+      statusUangBox.className = "status-indicator-box danger-red";
+      statusUangBox.innerHTML = `<span>⚠️ Minus Rp ${Math.abs(selisih).toLocaleString('id-ID')}</span>`;
+    } else {
+      statusUangBox.className = "status-indicator-box warning-yellow";
+      statusUangBox.innerHTML = `<span>⚠️ Lebih Rp ${selisih.toLocaleString('id-ID')}</span>`;
+    }
+  }
+
+  // AUDIT KOPI
+  const kopiDibawa = parseFloat(document.getElementById('kopiDibawa')?.value) || 0;
+  const kopiSisa = parseFloat(document.getElementById('kopiSisa')?.value) || 0;
+  const kopiTerpakai = (kopiDibawa > kopiSisa) ? (kopiDibawa - kopiSisa) : 0;
+  const targetKopiResep = (totalCupRegSemua * settingKopiN) + (totalCupLrgSemua * settingKopiL);
+
+  const statusKopiBox = document.getElementById('statusBoxKopi');
+  if (statusKopiBox) {
+    if (kopiTerpakai <= targetKopiResep) {
+      statusKopiBox.className = "status-indicator-box pas";
+      statusKopiBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
+    } else {
+      const borosG = kopiTerpakai - targetKopiResep;
+      if (borosG < 15) {
+        statusKopiBox.className = "status-indicator-box warning-yellow";
+        statusKopiBox.innerHTML = `<span>⚠️ Minus ${borosG}g</span>`;
+      } else {
+        const estCupBoros = Math.round(borosG / settingKopiN);
+        statusKopiBox.className = "status-indicator-box danger-red";
+        statusKopiBox.innerHTML = `<span>⚠️ Minus ${borosG}g (± ${estCupBoros} cup)</span>`;
+      }
     }
   }
 }
@@ -359,7 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('input', (e) => {
-    if (e.target.classList.contains('calc-trigger') || e.target.id === 'inputUangTas' || e.target.id === 'inputQRIS' || e.target.id === 'inputPengeluaran') {
+    if (e.target.classList.contains('calc-trigger')) {
       hitungSemuaAudit();
       simpanDataTanggal();
     }
