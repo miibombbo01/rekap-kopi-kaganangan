@@ -1,4 +1,3 @@
-// LIST DAFTAR SIRUP
 const DAFTAR_SIRUP = [
   { id: 'aren', nama: 'Sirup Aren', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
   { id: 'pandan', nama: 'Sirup Pandan', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
@@ -11,13 +10,14 @@ const DAFTAR_SIRUP = [
 ];
 
 let selectedDate = new Date().getDate();
-let selectedCabang = 'sulaiman_simpang5'; // Default Cabang
+let selectedCabang = 'sulaiman_simpang5';
 
-// GRAMASI GLOBAL DEFAULT
-let globalGramReg = 18;
-let globalGramLrg = 28;
+// 4 PENGATURAN GRAMASI GLOBAL
+let settingSirupN = 18;
+let settingSirupL = 28;
+let settingKopiN = 18;
+let settingKopiL = 28;
 
-// RENDER KARTU SIRUP
 function renderSyrupCards() {
   const container = document.getElementById('syrupContainer');
   if (!container) return;
@@ -25,7 +25,7 @@ function renderSyrupCards() {
   container.innerHTML = '';
   DAFTAR_SIRUP.forEach(s => {
     const cardHtml = `
-      <div class="syrup-card-modern" id="card_${s.id}">
+      <div class="syrup-card-modern pop-anim" id="card_${s.id}">
         <div class="syrup-header">
           <span class="syrup-title-text">${s.nama.toUpperCase()}</span>
           <span class="badge-terpakai" id="terpakai_${s.id}">Terpakai: 0g</span>
@@ -68,28 +68,24 @@ function renderSyrupCards() {
   });
 }
 
-// BUKA ATAU GANTI CABANG / KARYAWAN
 function gantiKaryawanCabang(val) {
   selectedCabang = val;
   const displayCabang = document.getElementById('displayCabang');
   const displayKaryawan = document.getElementById('displayKaryawan');
 
   if (val === 'sulaiman_simpang5') {
-    displayCabang.innerText = 'Kopi Kaganangan - Cabang Simpang 5';
+    displayCabang.innerText = 'Cabang Simpang 5';
     displayKaryawan.innerText = 'Sulaiman';
   } else if (val === 'abdullah_pasar_timpah') {
-    displayCabang.innerText = 'Kopi Kaganangan - Pasar Timpah';
+    displayCabang.innerText = 'Pasar Timpah';
     displayKaryawan.innerText = 'Abdullah';
   }
 
-  // Reload data sesuai cabang yang dipilih
   muatDataTanggal(selectedDate);
 }
 
-// SIMPAN DATA AUDIT BERDASARKAN TANGGAL & CABANG
 function simpanDataTanggal() {
   const storageKey = `audit_data_${selectedCabang}_${selectedDate}`;
-  
   const dataForm = {
     sisaCupReg: document.getElementById('sisaCupReg')?.value || '',
     sisaCupLrg: document.getElementById('sisaCupLrg')?.value || '',
@@ -114,13 +110,11 @@ function simpanDataTanggal() {
   hitungSemuaAudit();
 }
 
-// MUAT DATA DARI LOCALSTORAGE
 function muatDataTanggal(tgl) {
   selectedDate = tgl;
   const storageKey = `audit_data_${selectedCabang}_${selectedDate}`;
   const savedDataRaw = localStorage.getItem(storageKey);
 
-  // Clear Form First
   document.getElementById('sisaCupReg').value = '';
   document.getElementById('sisaCupLrg').value = '';
   document.getElementById('inputUangTas').value = '';
@@ -161,13 +155,13 @@ function muatDataTanggal(tgl) {
   hitungSemuaAudit();
 }
 
-// PERHITUNGAN AUDIT & TAMPILAN DASHBOARD
+// LOGIKA PERHITUNGAN AUDIT BERTIKAT (PAS, KUNING, MERAH)
 function hitungSemuaAudit() {
   let totalOmzetSemua = 0;
   let totalCupRegSemua = 0;
   let totalCupLrgSemua = 0;
 
-  muatSettingGramasi(); // Pastikan nilai gramasi sesuai setting global
+  muatSettingGramasi();
 
   DAFTAR_SIRUP.forEach(s => {
     const awal = parseFloat(document.getElementById(`awal_${s.id}`)?.value) || 0;
@@ -192,55 +186,52 @@ function hitungSemuaAudit() {
     const terpakaiEl = document.getElementById(`terpakai_${s.id}`);
     if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
 
-    const limitResep = ((kpReg + crReg) * globalGramReg) + ((kpLrg + crLrg) * globalGramLrg);
+    const limitResep = ((kpReg + crReg) * settingSirupN) + ((kpLrg + crLrg) * settingSirupL);
     const statusBox = document.getElementById(`statusBox_${s.id}`);
 
     if (statusBox) {
       if (terpakai <= limitResep) {
+        // PAS / AMAN
         statusBox.className = "status-indicator-box pas";
         statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
       } else {
         const minusG = terpakai - limitResep;
-        const estCup = Math.round(minusG / globalGramReg);
-        const teksCup = estCup > 0 ? `(± ${estCup} cup)` : '';
-
-        statusBox.className = "status-indicator-box minus";
-        statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g ${teksCup}</span>`;
+        
+        // Cek apakah minus di bawah batas porsi minimal (15g)
+        if (minusG < 15) {
+          // KUNING: Hanya tampilkan minus gramasi tanpa rincian cup
+          statusBox.className = "status-indicator-box warning-yellow";
+          statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g</span>`;
+        } else {
+          // MERAH: Minus cukup besar (15g ke atas), tampilkan rincian ± cup
+          const estCup = Math.round(minusG / settingSirupN);
+          statusBox.className = "status-indicator-box danger-red";
+          statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g (± ${estCup} cup)</span>`;
+        }
       }
     }
   });
 
-  // Update Mini Board 1: Cup Terjual
   const dashCup = document.getElementById('dashCupTerjual');
   if (dashCup) dashCup.innerText = `${totalCupRegSemua} Reg | ${totalCupLrgSemua} Lrg`;
 
-  // Logika Emoji Penjualan Cup
   const totalCupKeseluruhan = totalCupRegSemua + totalCupLrgSemua;
   const dashCupEmoji = document.getElementById('dashCupEmoji');
   if (dashCupEmoji) {
-    if (totalCupKeseluruhan > 50) {
-      dashCupEmoji.innerText = '🤩';
-    } else if (totalCupKeseluruhan > 40) {
-      dashCupEmoji.innerText = '😁';
-    } else if (totalCupKeseluruhan > 30) {
-      dashCupEmoji.innerText = '😊';
-    } else {
-      dashCupEmoji.innerText = '🥲';
-    }
+    if (totalCupKeseluruhan > 50) dashCupEmoji.innerText = '🤩';
+    else if (totalCupKeseluruhan > 40) dashCupEmoji.innerText = '😁';
+    else if (totalCupKeseluruhan > 30) dashCupEmoji.innerText = '😊';
+    else dashCupEmoji.innerText = '🥲';
   }
 
-  // Update Mini Board 2: Total Uang
   const uangFisik = parseFloat(document.getElementById('inputUangTas')?.value) || 0;
   const qris = parseFloat(document.getElementById('inputQRIS')?.value) || 0;
   const pengeluaran = parseFloat(document.getElementById('inputPengeluaran')?.value) || 0;
 
-  // Rumus: Total Semua Uang (Fisik + QRIS - Pengeluaran)
   const totalUangAkhir = (uangFisik + qris) - pengeluaran;
-  
   const dashTotalUang = document.getElementById('dashTotalUang');
   if (dashTotalUang) dashTotalUang.innerText = `Rp ${totalUangAkhir.toLocaleString('id-ID')}`;
 
-  // Keterangan Pas atau Minus
   const dashUangStatus = document.getElementById('dashUangStatus');
   if (dashUangStatus) {
     const selisih = totalUangAkhir - totalOmzetSemua;
@@ -253,7 +244,6 @@ function hitungSemuaAudit() {
   }
 }
 
-// GENERATE PILL TANGGAL
 function generateDateStrip() {
   const container = document.getElementById('dateStripContainer');
   if (!container) return;
@@ -294,36 +284,37 @@ function selectDate(element, tgl) {
   muatDataTanggal(tgl);
 }
 
-// SIMPAN & MUAT SETTING GRAMASI GLOBAL
 function simpanSettingGramasi() {
-  const gReg = parseFloat(document.getElementById('settingGramReg')?.value) || 18;
-  const gLrg = parseFloat(document.getElementById('settingGramLrg')?.value) || 28;
+  settingSirupN = parseFloat(document.getElementById('settingSirupN')?.value) || 18;
+  settingSirupL = parseFloat(document.getElementById('settingSirupL')?.value) || 28;
+  settingKopiN = parseFloat(document.getElementById('settingKopiN')?.value) || 18;
+  settingKopiL = parseFloat(document.getElementById('settingKopiL')?.value) || 28;
 
-  globalGramReg = gReg;
-  globalGramLrg = gLrg;
-
-  localStorage.setItem('setting_gram_reg', gReg);
-  localStorage.setItem('setting_gram_lrg', gLrg);
+  localStorage.setItem('setting_sirup_n', settingSirupN);
+  localStorage.setItem('setting_sirup_l', settingSirupL);
+  localStorage.setItem('setting_kopi_n', settingKopiN);
+  localStorage.setItem('setting_kopi_l', settingKopiL);
 
   hitungSemuaAudit();
 }
 
 function muatSettingGramasi() {
-  const gReg = localStorage.getItem('setting_gram_reg');
-  const gLrg = localStorage.getItem('setting_gram_lrg');
+  const sN = localStorage.getItem('setting_sirup_n');
+  const sL = localStorage.getItem('setting_sirup_l');
+  const kN = localStorage.getItem('setting_kopi_n');
+  const kL = localStorage.getItem('setting_kopi_l');
 
-  if (gReg) globalGramReg = parseFloat(gReg);
-  if (gLrg) globalGramLrg = parseFloat(gLrg);
+  if (sN) settingSirupN = parseFloat(sN);
+  if (sL) settingSirupL = parseFloat(sL);
+  if (kN) settingKopiN = parseFloat(kN);
+  if (kL) settingKopiL = parseFloat(kL);
 
-  if (document.getElementById('settingGramReg')) {
-    document.getElementById('settingGramReg').value = globalGramReg;
-  }
-  if (document.getElementById('settingGramLrg')) {
-    document.getElementById('settingGramLrg').value = globalGramLrg;
-  }
+  if (document.getElementById('settingSirupN')) document.getElementById('settingSirupN').value = settingSirupN;
+  if (document.getElementById('settingSirupL')) document.getElementById('settingSirupL').value = settingSirupL;
+  if (document.getElementById('settingKopiN')) document.getElementById('settingKopiN').value = settingKopiN;
+  if (document.getElementById('settingKopiL')) document.getElementById('settingKopiL').value = settingKopiL;
 }
 
-// INIT EVENT LISTENERS
 document.addEventListener('DOMContentLoaded', () => {
   renderSyrupCards();
   generateDateStrip();
@@ -336,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
     monthYearEl.innerText = new Date().toLocaleDateString('id-ID', opsiBulan);
   }
 
-  // Modals & Nav Trigger
   const overlayAudit = document.getElementById('pageAuditOverlay');
   const overlaySetting = document.getElementById('pageSettingOverlay');
 
@@ -375,4 +365,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-
