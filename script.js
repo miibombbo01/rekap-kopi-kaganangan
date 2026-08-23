@@ -189,21 +189,21 @@ function hitungSemuaAudit() {
     const limitResep = ((kpReg + crReg) * settingSirupN) + ((kpLrg + crLrg) * settingSirupL);
     const statusBox = document.getElementById(`statusBox_${s.id}`);
 
-    if (statusBox) {
+        if (statusBox) {
       if (terpakai <= limitResep) {
-        // PAS / AMAN
+        // PAS / AMAN (HIJAU)
         statusBox.className = "status-indicator-box pas";
         statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
       } else {
         const minusG = terpakai - limitResep;
         
-        // Cek apakah minus di bawah batas porsi minimal (15g)
+        // KUNING: Minus di bawah 15g
         if (minusG < 15) {
-          // KUNING: Hanya tampilkan minus gramasi tanpa rincian cup
           statusBox.className = "status-indicator-box warning-yellow";
           statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g</span>`;
-        } else {
-          // MERAH: Minus cukup besar (15g ke atas), tampilkan rincian ± cup
+        } 
+        // MERAH: Minus 15g ke atas
+        else {
           const estCup = Math.round(minusG / settingSirupN);
           statusBox.className = "status-indicator-box danger-red";
           statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g (± ${estCup} cup)</span>`;
