@@ -170,8 +170,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; 
-  gap: 30px;                  
+  justify-content: space-between; /* Kembalikan ke space-between agar pembagian ruang otomatis */
+  gap: 0;
 }
 
 /* HERO CIRCLE */
@@ -179,7 +179,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 0;
+  margin: auto 0; /* Auto margin akan mendorong lingkaran ke tengah dan memberi jarak proporsional ke board */
 }
 
 .outer-ring {
