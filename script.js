@@ -9,16 +9,21 @@ const DAFTAR_SIRUP = [
   { id: 'butterscotch', nama: 'Sirup Butterscotch', hgKopiReg: 18000, hgKopiLrg: 28000, hgCrmReg: 18000, hgCrmLrg: 28000 }
 ];
 
+const DAFTAR_MILKY = [
+  { id: 'matcha', nama: 'Matcha', hgReg: 15000, hgLrg: 25000 },
+  { id: 'taro', nama: 'Taro', hgReg: 15000, hgLrg: 25000 },
+  { id: 'redvelvet', nama: 'Red Velvet', hgReg: 15000, hgLrg: 25000 },
+  { id: 'choco', nama: 'Choco', hgReg: 15000, hgLrg: 25000 }
+];
+
 let selectedDate = new Date().getDate();
 let selectedCabang = 'sulaiman_simpang5';
 
-// 4 PENGATURAN GRAMASI GLOBAL
 let settingSirupN = 18;
 let settingSirupL = 28;
 let settingKopiN = 18;
 let settingKopiL = 28;
 
-// FUNGSI NAVIGASI TAB CARD
 function switchTab(tabName) {
   const contents = document.querySelectorAll('.tab-content');
   const buttons = document.querySelectorAll('.tab-btn');
@@ -39,6 +44,8 @@ function renderSyrupCards() {
   if (!container) return;
 
   container.innerHTML = '';
+  
+  // Render Sirup
   DAFTAR_SIRUP.forEach(s => {
     const cardHtml = `
       <div class="syrup-card-modern pop-anim" id="card_${s.id}">
@@ -82,6 +89,48 @@ function renderSyrupCards() {
     `;
     container.innerHTML += cardHtml;
   });
+
+  // Judul Varian Milky
+  container.innerHTML += `<div class="section-title">🥛 VARIAN MILKY (NON-KOPI)</div>`;
+
+  // Render Milky Cards
+  DAFTAR_MILKY.forEach(m => {
+    const cardHtml = `
+      <div class="syrup-card-modern pop-anim milky-card" id="card_${m.id}">
+        <div class="syrup-header">
+          <span class="syrup-title-text">${m.nama.toUpperCase()}</span>
+          <span class="badge-terpakai" id="terpakai_${m.id}">Terpakai: 0g</span>
+        </div>
+
+        <div class="gramasi-grid">
+          <div class="input-group-custom">
+            <label>Gramasi Dibawa (g)</label>
+            <input type="number" id="awal_${m.id}" class="calc-trigger" placeholder="0" inputmode="numeric">
+          </div>
+          <div class="input-group-custom">
+            <label>Gramasi Sisa (g)</label>
+            <input type="number" id="sisa_${m.id}" class="calc-trigger" placeholder="0" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="variant-group-box milky-bg">
+          <div class="variant-section-title">Penjualan Cup</div>
+          <div class="cup-inputs-grid">
+            <input type="number" id="milkyReg_${m.id}" class="calc-trigger" placeholder="Normal (Cup)" inputmode="numeric">
+            <input type="number" id="milkyLrg_${m.id}" class="calc-trigger" placeholder="Large (Cup)" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="syrup-money-text" id="money_${m.id}">Total Nilai: Rp 0</div>
+
+        <div class="status-indicator-box pas" id="statusBox_${m.id}">
+          <div class="check-icon">✓</div>
+          <span>Pas / Aman</span>
+        </div>
+      </div>
+    `;
+    container.innerHTML += cardHtml;
+  });
 }
 
 function gantiKaryawanCabang(val) {
@@ -113,7 +162,8 @@ function simpanDataTanggal() {
     inputKasbon: document.getElementById('inputKasbon')?.value || '',
     kopiDibawa: document.getElementById('kopiDibawa')?.value || '',
     kopiSisa: document.getElementById('kopiSisa')?.value || '',
-    sirup: {}
+    sirup: {},
+    milky: {}
   };
 
   DAFTAR_SIRUP.forEach(s => {
@@ -124,6 +174,15 @@ function simpanDataTanggal() {
       kpLrg: document.getElementById(`kopiLrg_${s.id}`)?.value || '',
       crReg: document.getElementById(`crmReg_${s.id}`)?.value || '',
       crLrg: document.getElementById(`crmLrg_${s.id}`)?.value || ''
+    };
+  });
+
+  DAFTAR_MILKY.forEach(m => {
+    dataForm.milky[m.id] = {
+      awal: document.getElementById(`awal_${m.id}`)?.value || '',
+      sisa: document.getElementById(`sisa_${m.id}`)?.value || '',
+      mlReg: document.getElementById(`milkyReg_${m.id}`)?.value || '',
+      mlLrg: document.getElementById(`milkyLrg_${m.id}`)?.value || ''
     };
   });
 
@@ -148,6 +207,13 @@ function muatDataTanggal(tgl) {
     if (document.getElementById(`crmLrg_${s.id}`)) document.getElementById(`crmLrg_${s.id}`).value = '';
   });
 
+  DAFTAR_MILKY.forEach(m => {
+    if (document.getElementById(`awal_${m.id}`)) document.getElementById(`awal_${m.id}`).value = '';
+    if (document.getElementById(`sisa_${m.id}`)) document.getElementById(`sisa_${m.id}`).value = '';
+    if (document.getElementById(`milkyReg_${m.id}`)) document.getElementById(`milkyReg_${m.id}`).value = '';
+    if (document.getElementById(`milkyLrg_${m.id}`)) document.getElementById(`milkyLrg_${m.id}`).value = '';
+  });
+
   if (savedDataRaw) {
     const data = JSON.parse(savedDataRaw);
     fields.forEach(f => {
@@ -166,6 +232,17 @@ function muatDataTanggal(tgl) {
         }
       });
     }
+
+    if (data.milky) {
+      DAFTAR_MILKY.forEach(m => {
+        if (data.milky[m.id]) {
+          if (document.getElementById(`awal_${m.id}`)) document.getElementById(`awal_${m.id}`).value = data.milky[m.id].awal || '';
+          if (document.getElementById(`sisa_${m.id}`)) document.getElementById(`sisa_${m.id}`).value = data.milky[m.id].sisa || '';
+          if (document.getElementById(`milkyReg_${m.id}`)) document.getElementById(`milkyReg_${m.id}`).value = data.milky[m.id].mlReg || '';
+          if (document.getElementById(`milkyLrg_${m.id}`)) document.getElementById(`milkyLrg_${m.id}`).value = data.milky[m.id].mlLrg || '';
+        }
+      });
+    }
   }
 
   hitungSemuaAudit();
@@ -178,6 +255,7 @@ function hitungSemuaAudit() {
 
   muatSettingGramasi();
 
+  // HITUNG SIRUP
   DAFTAR_SIRUP.forEach(s => {
     const awal = parseFloat(document.getElementById(`awal_${s.id}`)?.value) || 0;
     const sisa = parseFloat(document.getElementById(`sisa_${s.id}`)?.value) || 0;
@@ -203,6 +281,47 @@ function hitungSemuaAudit() {
 
     const limitResep = ((kpReg + crReg) * settingSirupN) + ((kpLrg + crLrg) * settingSirupL);
     const statusBox = document.getElementById(`statusBox_${s.id}`);
+
+    if (statusBox) {
+      if (terpakai <= limitResep) {
+        statusBox.className = "status-indicator-box pas";
+        statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
+      } else {
+        const minusG = terpakai - limitResep;
+        if (minusG < 15) {
+          statusBox.className = "status-indicator-box warning-yellow";
+          statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g</span>`;
+        } else {
+          const estCup = Math.round(minusG / settingSirupN);
+          statusBox.className = "status-indicator-box danger-red";
+          statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g (± ${estCup} cup)</span>`;
+        }
+      }
+    }
+  });
+
+  // HITUNG MILKY
+  DAFTAR_MILKY.forEach(m => {
+    const awal = parseFloat(document.getElementById(`awal_${m.id}`)?.value) || 0;
+    const sisa = parseFloat(document.getElementById(`sisa_${m.id}`)?.value) || 0;
+    const mlReg = parseFloat(document.getElementById(`milkyReg_${m.id}`)?.value) || 0;
+    const mlLrg = parseFloat(document.getElementById(`milkyLrg_${m.id}`)?.value) || 0;
+
+    totalCupRegSemua += mlReg;
+    totalCupLrgSemua += mlLrg;
+
+    const totalUangMilky = (mlReg * m.hgReg) + (mlLrg * m.hgLrg);
+    totalOmzetSemua += totalUangMilky;
+
+    const moneyEl = document.getElementById(`money_${m.id}`);
+    if (moneyEl) moneyEl.innerText = `Total Nilai: Rp ${totalUangMilky.toLocaleString('id-ID')}`;
+
+    const terpakai = (awal > sisa) ? (awal - sisa) : 0;
+    const terpakaiEl = document.getElementById(`terpakai_${m.id}`);
+    if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
+
+    const limitResep = (mlReg * settingSirupN) + (mlLrg * settingSirupL);
+    const statusBox = document.getElementById(`statusBox_${m.id}`);
 
     if (statusBox) {
       if (terpakai <= limitResep) {
@@ -270,11 +389,20 @@ function hitungSemuaAudit() {
     }
   }
 
-  // AUDIT KOPI
+  // AUDIT KOPI (Hanya menghitung cup berbasis sirup kopi, Milky tidak menghabiskan bubuk kopi)
   const kopiDibawa = parseFloat(document.getElementById('kopiDibawa')?.value) || 0;
   const kopiSisa = parseFloat(document.getElementById('kopiSisa')?.value) || 0;
   const kopiTerpakai = (kopiDibawa > kopiSisa) ? (kopiDibawa - kopiSisa) : 0;
-  const targetKopiResep = (totalCupRegSemua * settingKopiN) + (totalCupLrgSemua * settingKopiL);
+  
+  // Total Cup Kopi Khusus Sirup saja (tanpa Milky)
+  let totalCupKopiOnlyReg = 0;
+  let totalCupKopiOnlyLrg = 0;
+  DAFTAR_SIRUP.forEach(s => {
+    totalCupKopiOnlyReg += (parseFloat(document.getElementById(`kopiReg_${s.id}`)?.value) || 0) + (parseFloat(document.getElementById(`crmReg_${s.id}`)?.value) || 0);
+    totalCupKopiOnlyLrg += (parseFloat(document.getElementById(`kopiLrg_${s.id}`)?.value) || 0) + (parseFloat(document.getElementById(`crmLrg_${s.id}`)?.value) || 0);
+  });
+
+  const targetKopiResep = (totalCupKopiOnlyReg * settingKopiN) + (totalCupKopiOnlyLrg * settingKopiL);
 
   const statusKopiBox = document.getElementById('statusBoxKopi');
   if (statusKopiBox) {
@@ -321,7 +449,7 @@ function generateDateStrip() {
   container.innerHTML = html;
 
   setTimeout(() => {
-    const activePill = container.querySelector('.date-pill.active');
+  const activePill = container.querySelector('.date-pill.active');
     if (activePill) {
       activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     }
