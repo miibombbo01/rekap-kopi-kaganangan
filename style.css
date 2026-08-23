@@ -272,16 +272,69 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 
-/* OVERLAY AUDIT & SETTING */
+/* OVERLAY DENGAN EFEK RIAK AIR & BOUNCY BOLA */
 .overlay-page {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: #F8FAFC; z-index: 999; display: flex; flex-direction: column;
-  clip-path: circle(0% at 50% 35%);
-  transition: clip-path 0.45s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.45s;
-  overflow-y: auto; padding-bottom: 80px; pointer-events: none; visibility: hidden;
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100vw; 
+  height: 100vh;
+  background: #F8FAFC; 
+  z-index: 999; 
+  display: flex; 
+  flex-direction: column;
+  overflow-y: auto; 
+  padding-bottom: 80px; 
+  pointer-events: none; 
+  visibility: hidden;
+
+  /* Mula-mula menguncup kecil tepat di posisi tombol Hitung */
+  clip-path: circle(0% at 50% 45%);
+
+  /* Transisi khusus: Memencar halus seperti air saat buka, membal bouncy seperti bola saat tutup */
+  transition: clip-path 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              visibility 0.55s;
 }
 
-.overlay-page.open { clip-path: circle(150% at 50% 35%); pointer-events: auto; visibility: visible; }
+/* KETIKA BUKA (MEMENCAR SEPERTI AIR) */
+.overlay-page.open { 
+  clip-path: circle(150% at 50% 45%); 
+  pointer-events: auto; 
+  visibility: visible; 
+}
+
+/* ANIMASI POP-UP BOUNCY UNTUK CARD / BOARD DI DALAMNYA */
+@keyframes fluidCardPop {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.85);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.02); /* Efek membal air */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Kelas yang ditempelkan ke card di dalam layar hitung */
+.overlay-content .audit-box,
+.overlay-content .main-tab-card,
+.overlay-content .syrup-card-modern {
+  opacity: 0; /* Mulai dari tersembunyi */
+}
+
+.overlay-page.open .audit-box,
+.overlay-page.open .main-tab-card,
+.overlay-page.open .syrup-card-modern {
+  animation: fluidCardPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Efek kemunculan bertahap (staggered delay) */
+.overlay-page.open .main-tab-card { animation-delay: 0.15s; }
+.overlay-page.open .syrup-card-modern { animation-delay: 0.25s; }
 
 .overlay-header {
   background: #FFF; padding: 14px 16px; display: flex; justify-content: space-between;
