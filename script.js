@@ -514,13 +514,15 @@ document.addEventListener('DOMContentLoaded', () => {
     overlayAudit.classList.add('open');
   });
 
-  document.getElementById('btnTutup')?.addEventListener('click', () => {
+    document.getElementById('btnTutup')?.addEventListener('click', () => {
     overlayAudit.classList.remove('open');
+    setTimeout(() => { overlayAudit.scrollTop = 0; }, 550);
   });
 
   document.getElementById('btnSelesai')?.addEventListener('click', () => {
     simpanDataTanggal();
     overlayAudit.classList.remove('open');
+    setTimeout(() => { overlayAudit.scrollTop = 0; }, 550);
   });
 
   document.getElementById('btnNavSetting')?.addEventListener('click', () => {
