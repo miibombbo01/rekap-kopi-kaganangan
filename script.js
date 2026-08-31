@@ -1,4 +1,6 @@
 const DAFTAR_SIRUP = [
+  { id: 'original', nama: 'Original', hgKopiReg: 12000, hgKopiLrg: 23000, hgCrmReg: 0, hgCrmLrg: 0 },
+  { id: 'americano', nama: 'Americano', hgKopiReg: 10000, hgKopiLrg: 20000, hgCrmReg: 0, hgCrmLrg: 0 },
   { id: 'aren', nama: 'Sirup Aren', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
   { id: 'pandan', nama: 'Sirup Pandan', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
   { id: 'vanilla', nama: 'Sirup Vanilla', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
@@ -421,6 +423,23 @@ function hitungSemuaAudit() {
       }
     }
   }
+  // --- TAMBAHAN AUDIT STOK CUP FISIK VS TERJUAL ---
+const cupDibawaR = parseFloat(document.getElementById('cupDibawaReg')?.value) || 0;
+const sisaCupR = parseFloat(document.getElementById('sisaCupReg')?.value) || 0;
+const cupDibawaL = parseFloat(document.getElementById('cupDibawaLrg')?.value) || 0;
+const sisaCupL = parseFloat(document.getElementById('sisaCupLrg')?.value) || 0;
+
+const cupFisikTerpakaiReg = (cupDibawaR > sisaCupR) ? (cupDibawaR - sisaCupR) : 0;
+const cupFisikTerpakaiLrg = (cupDibawaL > sisaCupL) ? (cupDibawaL - sisaCupL) : 0;
+
+// Bandingkan dengan total cup penjualan varian
+const selisihCupReg = cupFisikTerpakaiReg - totalCupRegSemua;
+const selisihCupLrg = cupFisikTerpakaiLrg - totalCupLrgSemua;
+
+// Kamu bisa menampilkan status selisih cup ini di dashboard atau alert jika ada cup hilang/selisih
+if (selisihCupReg !== 0 || selisihCupLrg !== 0) {
+  console.warn(`Ada selisih cup! Reg: ${selisihCupReg}, Lrg: ${selisihCupLrg}`);
+}
 }
 
 function generateDateStrip() {
