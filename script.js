@@ -277,6 +277,16 @@ function hitungSemuaAudit() {
     const moneyEl = document.getElementById(`money_${s.id}`);
     if (moneyEl) moneyEl.innerText = `Total Nilai: Rp ${totalUangSirup.toLocaleString('id-ID')}`;
 
+    if (totalCupVarian > 0 && terpakaiSirup === 0) {
+    statusBox.className = "status-indicator-box warning-yellow";
+    statusBox.innerHTML = `<span>⚠️ Lupa Timbang? (Sirup 0g)</span>`;
+  } else if (terpakaiSirup <= limitSirup) {
+    statusBox.className = "status-indicator-box pas";
+    statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
+  } else {
+    // ... biarkan kode status boros yang sudah ada di bawahnya ...
+    }
+
     const terpakai = (awal > sisa) ? (awal - sisa) : 0;
     const terpakaiEl = document.getElementById(`terpakai_${s.id}`);
     if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
@@ -356,13 +366,16 @@ function hitungSemuaAudit() {
     else dashCupEmoji.innerText = '🥲';
   }
 
-  // AUDIT KEUANGAN
+    // AUDIT KEUANGAN
   const cash = parseFloat(document.getElementById('inputUangTas')?.value) || 0;
   const qris = parseFloat(document.getElementById('inputQRIS')?.value) || 0;
   const pengeluaran = parseFloat(document.getElementById('inputPengeluaran')?.value) || 0;
   const kasbon = parseFloat(document.getElementById('inputKasbon')?.value) || 0;
 
-  const totalUangAkhir = cash + qris + pengeluaran + kasbon;
+  // Pengeluaran & Kasbon mengurangi uang cash fisik di tas/laci
+  const uangCashFisik = cash - pengeluaran - kasbon; 
+  const totalUangAkhir = uangCashFisik + qris;
+
   const dashTotalUang = document.getElementById('dashTotalUang');
   if (dashTotalUang) dashTotalUang.innerText = `Rp ${totalUangAkhir.toLocaleString('id-ID')}`;
 
