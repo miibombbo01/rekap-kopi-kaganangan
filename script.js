@@ -49,8 +49,8 @@ function renderSyrupCards() {
   
   // Render Sirup
   DAFTAR_SIRUP.forEach(s => {
-    // Cek apakah sirup ini memiliki varian creamy atau tidak (Original & Americano tidak punya)
-    const punyaCreamy = s.hgCrmReg !== undefined && s.hgCrmLrg !== undefined;
+    // Cek apakah ini menu Original atau Americano (untuk menyembunyikan kotak creamy secara visual)
+    const isKopiHitam = s.id === 'original' || s.id === 'americano';
 
     const cardHtml = `
       <div class="syrup-card-modern pop-anim" id="card_${s.id}">
@@ -77,7 +77,7 @@ function renderSyrupCards() {
             <input type="number" id="kopiLrg_${s.id}" class="calc-trigger" placeholder="Large (Cup)" inputmode="numeric">
           </div>
 
-          ${punyaCreamy ? `
+          ${!isKopiHitam ? `
             <div class="variant-section-title">Varian Creamy</div>
             <div class="cup-inputs-grid">
               <input type="number" id="crmReg_${s.id}" class="calc-trigger" placeholder="Normal (Cup)" inputmode="numeric">
@@ -139,7 +139,7 @@ function renderSyrupCards() {
     container.innerHTML += cardHtml;
   });
 }
-
+  
 function gantiKaryawanCabang(val) {
   selectedCabang = val;
   const displayCabang = document.getElementById('displayCabang');
