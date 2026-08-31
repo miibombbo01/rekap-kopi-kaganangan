@@ -1,6 +1,6 @@
 const DAFTAR_SIRUP = [
-  { id: 'original', nama: 'Original', hgKopiReg: 12000, hgKopiLrg: 23000, hgCrmReg: 0, hgCrmLrg: 0 },
-  { id: 'americano', nama: 'Americano', hgKopiReg: 10000, hgKopiLrg: 20000, hgCrmReg: 0, hgCrmLrg: 0 },
+  { id: 'original', nama: 'Original', hgKopiReg: 12000, hgKopiLrg: 23000 },
+  { id: 'americano', nama: 'Americano', hgKopiReg: 10000, hgKopiLrg: 20000 },
   { id: 'aren', nama: 'Sirup Aren', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
   { id: 'pandan', nama: 'Sirup Pandan', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
   { id: 'vanilla', nama: 'Sirup Vanilla', hgKopiReg: 15000, hgKopiLrg: 25000, hgCrmReg: 15000, hgCrmLrg: 25000 },
