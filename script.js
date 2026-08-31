@@ -264,52 +264,66 @@ function hitungSemuaAudit() {
 
   muatSettingGramasi();
 
-  // HITUNG SIRUP
+  // HITUNG SIRUP & KOPI HITAM
   DAFTAR_SIRUP.forEach(s => {
-    const awal = parseFloat(document.getElementById(`awal_${s.id}`)?.value) || 0;
-    const sisa = parseFloat(document.getElementById(`sisa_${s.id}`)?.value) || 0;
+    const isKopiHitam = s.id === 'original' || s.id === 'americano';
+
+    let awal = 0;
+    let sisa = 0;
+    let terpakai = 0;
+
+    // Ambil data gramasi HANYA jika bukan kopi hitam (Original/Americano dilewati)
+    if (!isKopiHitam) {
+      awal = parseFloat(document.getElementById(`awal_${s.id}`)?.value) || 0;
+      sisa = parseFloat(document.getElementById(`sisa_${s.id}`)?.value) || 0;
+      terpakai = (awal > sisa) ? (awal - sisa) : 0;
+      
+      const terpakaiEl = document.getElementById(`terpakai_${s.id}`);
+      if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
+    }
+
     const kpReg = parseFloat(document.getElementById(`kopiReg_${s.id}`)?.value) || 0;
     const kpLrg = parseFloat(document.getElementById(`kopiLrg_${s.id}`)?.value) || 0;
-    const crReg = parseFloat(document.getElementById(`crmReg_${s.id}`)?.value) || 0;
-    const crLrg = parseFloat(document.getElementById(`crmLrg_${s.id}`)?.value) || 0;
+    const crReg = !isKopiHitam ? (parseFloat(document.getElementById(`crmReg_${s.id}`)?.value) || 0) : 0;
+    const crLrg = !isKopiHitam ? (parseFloat(document.getElementById(`crmLrg_${s.id}`)?.value) || 0) : 0;
 
     totalCupRegSemua += (kpReg + crReg);
     totalCupLrgSemua += (kpLrg + crLrg);
 
-    const uangKopi = (kpReg * s.hgKopiReg) + (kpLrg * s.hgKopiLrg);
-    const uangCreamy = (crReg * s.hgCrmReg) + (crLrg * s.hgCrmLrg);
+    const uangKopi = (kpReg * (s.hgKopiReg || 0)) + (kpLrg * (s.hgKopiLrg || 0));
+    const uangCreamy = (crReg * (s.hgCrmReg || 0)) + (crLrg * (s.hgCrmLrg || 0));
     const totalUangSirup = uangKopi + uangCreamy;
     totalOmzetSemua += totalUangSirup;
 
-            const moneyEl = document.getElementById(`money_${s.id}`);
+    const moneyEl = document.getElementById(`money_${s.id}`);
     if (moneyEl) moneyEl.innerText = `Total Nilai: Rp ${totalUangSirup.toLocaleString('id-ID')}`;
 
-    // Cukup hitung dan deklarasikan sekali saja di sini
-    const terpakai = (awal > sisa) ? (awal - sisa) : 0;
-    const terpakaiEl = document.getElementById(`terpakai_${s.id}`);
-    if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
-
-    const limitResep = ((kpReg + crReg) * settingSirupN) + ((kpLrg + crLrg) * settingSirupL);
     const statusBox = document.getElementById(`statusBox_${s.id}`);
-    const totalCupVarian = kpReg + kpLrg + crReg + crLrg;
-
     if (statusBox) {
-      // Cek kondisi Lupa Timbang / Aman / Boros
-      if (totalCupVarian > 0 && terpakai === 0) {
-        statusBox.className = "status-indicator-box warning-yellow";
-        statusBox.innerHTML = `<span>⚠️ Lupa Timbang? (Sirup 0g)</span>`;
-      } else if (terpakai <= limitResep) {
+      if (isKopiHitam) {
+        // Original & Americano otomatis aman karena tidak pakai timbangan botol
         statusBox.className = "status-indicator-box pas";
         statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
       } else {
-        const minusG = terpakai - limitResep;
-        if (minusG < 15) {
+        const limitResep = ((kpReg + crReg) * settingSirupN) + ((kpLrg + crLrg) * settingSirupL);
+        const totalCupVarian = kpReg + kpLrg + crReg + crLrg;
+
+        if (totalCupVarian > 0 && terpakai === 0) {
           statusBox.className = "status-indicator-box warning-yellow";
-          statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g</span>`;
+          statusBox.innerHTML = `<span>⚠️ Lupa Timbang? (Sirup 0g)</span>`;
+        } else if (terpakai <= limitResep) {
+          statusBox.className = "status-indicator-box pas";
+          statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
         } else {
-          const estCup = Math.round(minusG / settingSirupN);
-          statusBox.className = "status-indicator-box danger-red";
-          statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g (± ${estCup} cup)</span>`;
+          const minusG = terpakai - limitResep;
+          if (minusG < 15) {
+            statusBox.className = "status-indicator-box warning-yellow";
+            statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g</span>`;
+          } else {
+            const estCup = Math.round(minusG / settingSirupN);
+            statusBox.className = "status-indicator-box danger-red";
+            statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g (± ${estCup} cup)</span>`;
+          }
         }
       }
     }
@@ -320,7 +334,7 @@ function hitungSemuaAudit() {
     const awal = parseFloat(document.getElementById(`awal_${m.id}`)?.value) || 0;
     const sisa = parseFloat(document.getElementById(`sisa_${m.id}`)?.value) || 0;
     const mlReg = parseFloat(document.getElementById(`milkyReg_${m.id}`)?.value) || 0;
-    const mlLrg = parseFloat(document.getElementById(`milkyLrg_${m.id}`)?.value) || 0;
+    const mlLrg = parseFloat(document.getElementById(`milkyReg_${m.id}`)?.value) || 0; // *pastikan milkyLrg sesuai id HTML-mu*
 
     totalCupRegSemua += mlReg;
     totalCupLrgSemua += mlLrg;
@@ -369,13 +383,12 @@ function hitungSemuaAudit() {
     else dashCupEmoji.innerText = '🥲';
   }
 
-    // AUDIT KEUANGAN
+  // AUDIT KEUANGAN
   const cash = parseFloat(document.getElementById('inputUangTas')?.value) || 0;
   const qris = parseFloat(document.getElementById('inputQRIS')?.value) || 0;
   const pengeluaran = parseFloat(document.getElementById('inputPengeluaran')?.value) || 0;
   const kasbon = parseFloat(document.getElementById('inputKasbon')?.value) || 0;
 
-  // Pengeluaran & Kasbon mengurangi uang cash fisik di tas/laci
   const uangCashFisik = cash - pengeluaran - kasbon; 
   const totalUangAkhir = uangCashFisik + qris;
 
@@ -407,17 +420,25 @@ function hitungSemuaAudit() {
     }
   }
 
-  // AUDIT KOPI (Hanya menghitung cup berbasis sirup kopi, Milky tidak menghabiskan bubuk kopi)
+  // AUDIT KOPI
   const kopiDibawa = parseFloat(document.getElementById('kopiDibawa')?.value) || 0;
   const kopiSisa = parseFloat(document.getElementById('kopiSisa')?.value) || 0;
   const kopiTerpakai = (kopiDibawa > kopiSisa) ? (kopiDibawa - kopiSisa) : 0;
   
-  // Total Cup Kopi Khusus Sirup saja (tanpa Milky)
   let totalCupKopiOnlyReg = 0;
   let totalCupKopiOnlyLrg = 0;
   DAFTAR_SIRUP.forEach(s => {
-    totalCupKopiOnlyReg += (parseFloat(document.getElementById(`kopiReg_${s.id}`)?.value) || 0) + (parseFloat(document.getElementById(`crmReg_${s.id}`)?.value) || 0);
-    totalCupKopiOnlyLrg += (parseFloat(document.getElementById(`kopiLrg_${s.id}`)?.value) || 0) + (parseFloat(document.getElementById(`crmLrg_${s.id}`)?.value) || 0);
+    const isKopiHitam = s.id === 'original' || s.id === 'americano';
+    const kpReg = parseFloat(document.getElementById(`kopiReg_${s.id}`)?.value) || 0;
+    const kpLrg = parseFloat(document.getElementById(`kopiLrg_${s.id}`)?.value) || 0;
+    
+    totalCupKopiOnlyReg += kpReg;
+    totalCupKopiOnlyLrg += kpLrg;
+
+    if (!isKopiHitam) {
+      totalCupKopiOnlyReg += (parseFloat(document.getElementById(`crmReg_${s.id}`)?.value) || 0);
+      totalCupKopiOnlyLrg += (parseFloat(document.getElementById(`crmLrg_${s.id}`)?.value) || 0);
+    }
   });
 
   const targetKopiResep = (totalCupKopiOnlyReg * settingKopiN) + (totalCupKopiOnlyLrg * settingKopiL);
@@ -439,23 +460,22 @@ function hitungSemuaAudit() {
       }
     }
   }
-  // --- TAMBAHAN AUDIT STOK CUP FISIK VS TERJUAL ---
-const cupDibawaR = parseFloat(document.getElementById('cupDibawaReg')?.value) || 0;
-const sisaCupR = parseFloat(document.getElementById('sisaCupReg')?.value) || 0;
-const cupDibawaL = parseFloat(document.getElementById('cupDibawaLrg')?.value) || 0;
-const sisaCupL = parseFloat(document.getElementById('sisaCupLrg')?.value) || 0;
 
-const cupFisikTerpakaiReg = (cupDibawaR > sisaCupR) ? (cupDibawaR - sisaCupR) : 0;
-const cupFisikTerpakaiLrg = (cupDibawaL > sisaCupL) ? (cupDibawaL - sisaCupL) : 0;
+  // AUDIT STOK CUP FISIK VS TERJUAL
+  const cupDibawaR = parseFloat(document.getElementById('cupDibawaReg')?.value) || 0;
+  const sisaCupR = parseFloat(document.getElementById('sisaCupReg')?.value) || 0;
+  const cupDibawaL = parseFloat(document.getElementById('cupDibawaLrg')?.value) || 0;
+  const sisaCupL = parseFloat(document.getElementById('sisaCupLrg')?.value) || 0;
 
-// Bandingkan dengan total cup penjualan varian
-const selisihCupReg = cupFisikTerpakaiReg - totalCupRegSemua;
-const selisihCupLrg = cupFisikTerpakaiLrg - totalCupLrgSemua;
+  const cupFisikTerpakaiReg = (cupDibawaR > sisaCupR) ? (cupDibawaR - sisaCupR) : 0;
+  const cupFisikTerpakaiLrg = (cupDibawaL > sisaCupL) ? (cupDibawaL - sisaCupL) : 0;
 
-// Kamu bisa menampilkan status selisih cup ini di dashboard atau alert jika ada cup hilang/selisih
-if (selisihCupReg !== 0 || selisihCupLrg !== 0) {
-  console.warn(`Ada selisih cup! Reg: ${selisihCupReg}, Lrg: ${selisihCupLrg}`);
-}
+  const selisihCupReg = cupFisikTerpakaiReg - totalCupRegSemua;
+  const selisihCupLrg = cupFisikTerpakaiLrg - totalCupLrgSemua;
+
+  if (selisihCupReg !== 0 || selisihCupLrg !== 0) {
+    console.warn(`Ada selisih cup! Reg: ${selisihCupReg}, Lrg: ${selisihCupLrg}`);
+  }
 }
 
 function generateDateStrip() {
