@@ -274,9 +274,10 @@ function hitungSemuaAudit() {
     const totalUangSirup = uangKopi + uangCreamy;
     totalOmzetSemua += totalUangSirup;
 
-        const moneyEl = document.getElementById(`money_${s.id}`);
+            const moneyEl = document.getElementById(`money_${s.id}`);
     if (moneyEl) moneyEl.innerText = `Total Nilai: Rp ${totalUangSirup.toLocaleString('id-ID')}`;
 
+    // Cukup hitung dan deklarasikan sekali saja di sini
     const terpakai = (awal > sisa) ? (awal - sisa) : 0;
     const terpakaiEl = document.getElementById(`terpakai_${s.id}`);
     if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
@@ -291,30 +292,6 @@ function hitungSemuaAudit() {
         statusBox.className = "status-indicator-box warning-yellow";
         statusBox.innerHTML = `<span>⚠️ Lupa Timbang? (Sirup 0g)</span>`;
       } else if (terpakai <= limitResep) {
-        statusBox.className = "status-indicator-box pas";
-        statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
-      } else {
-        const minusG = terpakai - limitResep;
-        if (minusG < 15) {
-          statusBox.className = "status-indicator-box warning-yellow";
-          statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g</span>`;
-        } else {
-          const estCup = Math.round(minusG / settingSirupN);
-          statusBox.className = "status-indicator-box danger-red";
-          statusBox.innerHTML = `<span>⚠️ Minus ${minusG}g (± ${estCup} cup)</span>`;
-        }
-      }
-    }
-
-    const terpakai = (awal > sisa) ? (awal - sisa) : 0;
-    const terpakaiEl = document.getElementById(`terpakai_${s.id}`);
-    if (terpakaiEl) terpakaiEl.innerText = `Terpakai: ${terpakai}g`;
-
-    const limitResep = ((kpReg + crReg) * settingSirupN) + ((kpLrg + crLrg) * settingSirupL);
-    const statusBox = document.getElementById(`statusBox_${s.id}`);
-
-    if (statusBox) {
-      if (terpakai <= limitResep) {
         statusBox.className = "status-indicator-box pas";
         statusBox.innerHTML = `<div class="check-icon">✓</div><span>Pas / Aman</span>`;
       } else {
