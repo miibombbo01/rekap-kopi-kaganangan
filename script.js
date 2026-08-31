@@ -47,28 +47,30 @@ function renderSyrupCards() {
 
   container.innerHTML = '';
   
-  // Render Sirup
+  // Render Sirup & Kopi Hitam
   DAFTAR_SIRUP.forEach(s => {
-    // Cek apakah ini menu Original atau Americano (untuk menyembunyikan kotak creamy secara visual)
+    // Cek apakah ini menu Original atau Americano (kopi hitam tanpa botol gramasi)
     const isKopiHitam = s.id === 'original' || s.id === 'americano';
 
     const cardHtml = `
       <div class="syrup-card-modern pop-anim" id="card_${s.id}">
         <div class="syrup-header">
           <span class="syrup-title-text">${s.nama.toUpperCase()}</span>
-          <span class="badge-terpakai" id="terpakai_${s.id}">Terpakai: 0g</span>
+          ${!isKopiHitam ? `<span class="badge-terpakai" id="terpakai_${s.id}">Terpakai: 0g</span>` : ''}
         </div>
 
-        <div class="gramasi-grid">
-          <div class="input-group-custom">
-            <label>Gramasi Dibawa (g)</label>
-            <input type="number" id="awal_${s.id}" class="calc-trigger" placeholder="0" inputmode="numeric">
+        ${!isKopiHitam ? `
+          <div class="gramasi-grid">
+            <div class="input-group-custom">
+              <label>Gramasi Dibawa (g)</label>
+              <input type="number" id="awal_${s.id}" class="calc-trigger" placeholder="0" inputmode="numeric">
+            </div>
+            <div class="input-group-custom">
+              <label>Gramasi Sisa (g)</label>
+              <input type="number" id="sisa_${s.id}" class="calc-trigger" placeholder="0" inputmode="numeric">
+            </div>
           </div>
-          <div class="input-group-custom">
-            <label>Gramasi Sisa (g)</label>
-            <input type="number" id="sisa_${s.id}" class="calc-trigger" placeholder="0" inputmode="numeric">
-          </div>
-        </div>
+        ` : ''}
 
         <div class="variant-group-box">
           <div class="variant-section-title">Varian Kopi</div>
