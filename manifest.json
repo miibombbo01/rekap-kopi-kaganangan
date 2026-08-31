@@ -9,15 +9,14 @@
     {
       "src": "IMG-20260818-WA0026.jpg",
       "sizes": "192x192",
-      "type": "image/jpg",
-      "purpose": "any maskable"
+      "type": "image/jpeg",
+      "purpose": "any"
     },
     {
       "src": "IMG-20260818-WA0026.jpg",
       "sizes": "512x512",
-      "type": "image/jpg",
-      "purpose": "any maskable"
+      "type": "image/jpeg",
+      "purpose": "any"
     }
   ]
 }
-
