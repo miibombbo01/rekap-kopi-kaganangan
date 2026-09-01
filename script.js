@@ -334,7 +334,7 @@ function hitungSemuaAudit() {
     const awal = parseFloat(document.getElementById(`awal_${m.id}`)?.value) || 0;
     const sisa = parseFloat(document.getElementById(`sisa_${m.id}`)?.value) || 0;
     const mlReg = parseFloat(document.getElementById(`milkyReg_${m.id}`)?.value) || 0;
-    const mlLrg = parseFloat(document.getElementById(`milkyReg_${m.id}`)?.value) || 0; // *pastikan milkyLrg sesuai id HTML-mu*
+    const mlLrg = parseFloat(document.getElementById(`milkyLrg_${m.id}`)?.value) || 0;
 
     totalCupRegSemua += mlReg;
     totalCupLrgSemua += mlLrg;
