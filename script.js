@@ -389,7 +389,7 @@ function hitungSemuaAudit() {
   const pengeluaran = parseFloat(document.getElementById('inputPengeluaran')?.value) || 0;
   const kasbon = parseFloat(document.getElementById('inputKasbon')?.value) || 0;
 
-  const uangCashFisik = cash - pengeluaran - kasbon; 
+  const uangCashFisik = cash + pengeluaran + kasbon; 
   const totalUangAkhir = uangCashFisik + qris;
 
   const dashTotalUang = document.getElementById('dashTotalUang');
